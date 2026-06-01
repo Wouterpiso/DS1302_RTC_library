@@ -1,1 +1,202 @@
 #include "DS1302.hpp"
+#include <Arduino.h>
+
+#define REG_SECONDS 0x80
+#define REG_MINUTES 0x82
+#define REG_HOURS   0x84
+#define REG_DATE    0x86
+#define REG_MONTH   0x88
+#define REG_DAY     0x8A
+#define REG_YEAR    0x8C
+#define REG_WP      0x8E
+#define REG_BURST   0xBE
+#define READ_FLAG   0x01
+#define REG_SECONDS_READ  (REG_SECONDS | READ_FLAG)
+#define REG_BURST_READ    (REG_BURST | READ_FLAG)
+#define CH_BIT      0x80  
+#define HOUR_MASK   0x3F  
+
+Ds1302::Ds1302(uint8_t clockPin, uint8_t dataPin, uint8_t resetPin) {
+    _clockPin = clockPin;
+    _dataPin = dataPin;
+    _resetPin = resetPin;
+}
+
+uint8_t Ds1302::bcdToDec(uint8_t bcd) {
+    return (uint8_t)(((bcd >> 4) * 10) + (bcd & 0x0F));
+}
+
+uint8_t Ds1302::decToBcd(uint8_t dec) {
+    return (uint8_t)(((dec / 10) << 4) | (dec % 10));
+}
+
+int Ds1302::dataDitection() {
+    return digitalRead(_dataPin);
+}
+
+void Ds1302::setDataDirection(int direction) {
+    pinMode(_dataPin, direction);
+}
+
+void Ds1302::initiate() {
+    pinMode(_clockPin, OUTPUT);
+    pinMode(_resetPin, OUTPUT);
+    pinMode(_dataPin, INPUT); // <-- explicitly set INPUT here
+
+    digitalWrite(_clockPin, LOW);
+    digitalWrite(_resetPin, LOW);
+}
+
+void Ds1302::start() {
+    disableWriteProtect();
+    setHaltFlag(false);
+}
+
+void Ds1302::halt() {
+    setHaltFlag(true);
+}
+
+void Ds1302::setHaltFlag(bool halt) {
+    // Read all 8 bytes via burst
+    prepRead(REG_BURST_READ);
+    uint8_t regs[8];
+    for(int i = 0; i < 8; i++) {
+        regs[i] = readByte();
+    }
+    end();
+    
+    // Modify halt bit (bit 7 of seconds register)
+    if(halt) {
+        regs[0] |= 0x80;  // Set halt bit
+    } else {
+        regs[0] &= 0x7F;  // Clear halt bit
+    }
+    
+    // Ensure 8th byte is 0x80 for control
+    regs[7] = 0x80;
+    
+    // Disable write protect and write all bytes back
+    disableWriteProtect();
+    delay(5);
+    
+    prepWrite(REG_BURST);
+    for(int i = 0; i < 8; i++) {
+        writeByte(regs[i]);
+    }
+    end();
+}
+
+bool Ds1302::ishalted() {
+    prepRead(REG_SECONDS_READ);
+    uint8_t sec = readByte();
+    end();
+    return (sec & CH_BIT) != 0;
+}
+
+void Ds1302::disableWriteProtect() {
+    prepWrite(REG_WP);
+    writeByte(0x00); // write 0 to WP register to disable write protection
+    end();
+}
+
+void Ds1302::end() {
+    // release data line so device can drive it when needed
+    setDataDirection(INPUT);
+    digitalWrite(_resetPin, LOW);
+    digitalWrite(_clockPin, LOW);
+}
+
+void Ds1302::prepRead(uint8_t address) {
+    digitalWrite(_resetPin, HIGH);
+    delayMicroseconds(10);
+    setDataDirection(OUTPUT);
+    writeByte(address);
+    delayMicroseconds(10);
+    setDataDirection(INPUT);
+    delayMicroseconds(10);
+}
+
+void Ds1302::prepWrite(uint8_t address) {
+    digitalWrite(_resetPin, HIGH);
+    delayMicroseconds(10);
+    setDataDirection(OUTPUT);
+    writeByte(address);
+    delayMicroseconds(10);
+}
+
+void Ds1302::nextBit() {
+    digitalWrite(_clockPin, HIGH);
+    delayMicroseconds(1);
+    digitalWrite(_clockPin, LOW);
+    delayMicroseconds(1);
+}
+
+uint8_t Ds1302::readByte() {
+    uint8_t val = 0;
+    for(uint8_t i=0;i<8;i++) {
+        // Read bit BEFORE pulsing clock
+        if(digitalRead(_dataPin)) val |= (1 << i);
+        digitalWrite(_clockPin, HIGH);
+        delayMicroseconds(5);
+        digitalWrite(_clockPin, LOW);
+        delayMicroseconds(5);
+    }
+    return val;
+}
+
+void Ds1302::writeByte(uint8_t val) {
+    for(uint8_t i=0;i<8;i++) {
+        digitalWrite(_dataPin, (val >> i) & 0x01);
+        delayMicroseconds(5);
+        digitalWrite(_clockPin, HIGH);
+        delayMicroseconds(5);
+        digitalWrite(_clockPin, LOW);
+        delayMicroseconds(5);
+    }
+}
+
+void Ds1302::getDateTime(dateTime* dt) {
+    // Burst read - read 8 bytes (7 time bytes + 1 control byte)
+    prepRead(REG_BURST_READ);
+    uint8_t sec   = readByte();
+    uint8_t min   = readByte();
+    uint8_t hour  = readByte();
+    uint8_t date  = readByte();
+    uint8_t month = readByte();
+    uint8_t day   = readByte();
+    uint8_t year  = readByte();
+    uint8_t ctrl  = readByte();  // Read the 8th byte (control/RAM byte)
+    end();
+
+    dt->sec   = bcdToDec(sec & 0x7F);  // Mask off halt bit (bit 7)
+    dt->min   = bcdToDec(min & 0x7F);
+    dt->hour  = bcdToDec(hour & 0x3F); // Mask off 12/24 hour and AM/PM bits
+    dt->date  = bcdToDec(date & 0x3F);
+    dt->month = bcdToDec(month & 0x1F);
+    dt->day   = bcdToDec(day & 0x07);
+    dt->year  = bcdToDec(year & 0xFF);
+}
+
+void Ds1302::setDateTime(dateTime* dt) {
+    // Must disable write protect before writing
+    disableWriteProtect();
+    
+    // Burst write - write 8 bytes (7 time bytes + 1 control byte)
+    prepWrite(REG_BURST);
+    writeByte(decToBcd(dt->sec));
+    writeByte(decToBcd(dt->min));
+    writeByte(decToBcd(dt->hour));
+    writeByte(decToBcd(dt->date));
+    writeByte(decToBcd(dt->month));
+    writeByte(decToBcd(dt->day));
+    writeByte(decToBcd(dt->year));
+    writeByte(0x80);  // Write control byte (8th byte) - sets halt bit high
+    end();
+}
+
+uint8_t Ds1302::readRegister(uint8_t reg) {
+    prepRead(reg | READ_FLAG);
+    uint8_t val = readByte();
+    end();
+    return val;
+}

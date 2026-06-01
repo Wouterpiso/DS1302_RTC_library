@@ -46,15 +46,19 @@ class Ds1302{
 
         void halt();
 
-        void init();
+        void initiate();
 
         bool ishalted();
+
+        void disableWriteProtect();
 
         void getDateTime(dateTime* dateTime);
 
         void setDateTime(dateTime* dateTime);
 
         void setAlarm(dateTime* dateTime);
+
+        uint8_t readRegister(uint8_t reg);
 
     private:
         uint8_t _clockPin;
