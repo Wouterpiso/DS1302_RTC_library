@@ -15,6 +15,13 @@ class Ds1302{
             uint8_t year;
         } dateTime;
 
+        typedef struct {
+            uint8_t hour;
+            uint8_t min;
+            uint8_t sec;
+            bool    active;
+        } alarmTime;
+
         enum month : uint8_t {
             JANUARY = 1,
             FEBRUARY = 2,
@@ -43,9 +50,7 @@ class Ds1302{
         Ds1302(uint8_t clockPin, uint8_t dataPin, uint8_t resetPin);
         
         void start();
-
         void halt();
-
         void initiate();
 
         bool ishalted();
@@ -53,10 +58,12 @@ class Ds1302{
         void disableWriteProtect();
 
         void getDateTime(dateTime* dateTime);
-
         void setDateTime(dateTime* dateTime);
 
-        void setAlarm(dateTime* dateTime);
+        void setAlarm(uint8_t hour, uint8_t min, uint8_t sec);
+        void clearAlarm();
+        bool checkAlarm();
+        bool isAlarmActive();
 
         uint8_t readRegister(uint8_t reg);
 
@@ -64,6 +71,9 @@ class Ds1302{
         uint8_t _clockPin;
         uint8_t _dataPin;
         uint8_t _resetPin;
+
+        alarmTime _alarm;
+        bool      _alarmTriggered;
 
         void prepRead(uint8_t address);
         void prepWrite(uint8_t address);
@@ -80,7 +90,6 @@ class Ds1302{
         uint8_t decToBcd(uint8_t bcd);
 
         void setHaltFlag(bool halt);
-
 };
 
 #endif

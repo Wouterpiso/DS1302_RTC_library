@@ -41,7 +41,7 @@ void Ds1302::setDataDirection(int direction) {
 void Ds1302::initiate() {
     pinMode(_clockPin, OUTPUT);
     pinMode(_resetPin, OUTPUT);
-    pinMode(_dataPin, INPUT); // <-- explicitly set INPUT here
+    pinMode(_dataPin, INPUT);
 
     digitalWrite(_clockPin, LOW);
     digitalWrite(_resetPin, LOW);
@@ -57,7 +57,6 @@ void Ds1302::halt() {
 }
 
 void Ds1302::setHaltFlag(bool halt) {
-    // Read all 8 bytes via burst
     prepRead(REG_BURST_READ);
     uint8_t regs[8];
     for(int i = 0; i < 8; i++) {
@@ -65,17 +64,14 @@ void Ds1302::setHaltFlag(bool halt) {
     }
     end();
     
-    // Modify halt bit (bit 7 of seconds register)
     if(halt) {
-        regs[0] |= 0x80;  // Set halt bit
+        regs[0] |= 0x80;
     } else {
-        regs[0] &= 0x7F;  // Clear halt bit
+        regs[0] &= 0x7F;
     }
     
-    // Ensure 8th byte is 0x80 for control
     regs[7] = 0x80;
     
-    // Disable write protect and write all bytes back
     disableWriteProtect();
     delay(5);
     
@@ -95,12 +91,11 @@ bool Ds1302::ishalted() {
 
 void Ds1302::disableWriteProtect() {
     prepWrite(REG_WP);
-    writeByte(0x00); // write 0 to WP register to disable write protection
+    writeByte(0x00);
     end();
 }
 
 void Ds1302::end() {
-    // release data line so device can drive it when needed
     setDataDirection(INPUT);
     digitalWrite(_resetPin, LOW);
     digitalWrite(_clockPin, LOW);
@@ -134,7 +129,6 @@ void Ds1302::nextBit() {
 uint8_t Ds1302::readByte() {
     uint8_t val = 0;
     for(uint8_t i=0;i<8;i++) {
-        // Read bit BEFORE pulsing clock
         if(digitalRead(_dataPin)) val |= (1 << i);
         digitalWrite(_clockPin, HIGH);
         delayMicroseconds(5);
@@ -156,7 +150,6 @@ void Ds1302::writeByte(uint8_t val) {
 }
 
 void Ds1302::getDateTime(dateTime* dt) {
-    // Burst read - read 8 bytes (7 time bytes + 1 control byte)
     prepRead(REG_BURST_READ);
     uint8_t sec   = readByte();
     uint8_t min   = readByte();
@@ -165,12 +158,12 @@ void Ds1302::getDateTime(dateTime* dt) {
     uint8_t month = readByte();
     uint8_t day   = readByte();
     uint8_t year  = readByte();
-    uint8_t ctrl  = readByte();  // Read the 8th byte (control/RAM byte)
+    uint8_t ctrl  = readByte();
     end();
 
-    dt->sec   = bcdToDec(sec & 0x7F);  // Mask off halt bit (bit 7)
+    dt->sec   = bcdToDec(sec & 0x7F);
     dt->min   = bcdToDec(min & 0x7F);
-    dt->hour  = bcdToDec(hour & 0x3F); // Mask off 12/24 hour and AM/PM bits
+    dt->hour  = bcdToDec(hour & 0x3F);
     dt->date  = bcdToDec(date & 0x3F);
     dt->month = bcdToDec(month & 0x1F);
     dt->day   = bcdToDec(day & 0x07);
@@ -178,10 +171,7 @@ void Ds1302::getDateTime(dateTime* dt) {
 }
 
 void Ds1302::setDateTime(dateTime* dt) {
-    // Must disable write protect before writing
     disableWriteProtect();
-    
-    // Burst write - write 8 bytes (7 time bytes + 1 control byte)
     prepWrite(REG_BURST);
     writeByte(decToBcd(dt->sec));
     writeByte(decToBcd(dt->min));
@@ -190,7 +180,7 @@ void Ds1302::setDateTime(dateTime* dt) {
     writeByte(decToBcd(dt->month));
     writeByte(decToBcd(dt->day));
     writeByte(decToBcd(dt->year));
-    writeByte(0x80);  // Write control byte (8th byte) - sets halt bit high
+    writeByte(0x80);
     end();
 }
 
@@ -199,4 +189,43 @@ uint8_t Ds1302::readRegister(uint8_t reg) {
     uint8_t val = readByte();
     end();
     return val;
+}
+
+// --- Alarm ---
+
+void Ds1302::setAlarm(uint8_t hour, uint8_t min, uint8_t sec) {
+    _alarm.hour     = hour;
+    _alarm.min      = min;
+    _alarm.sec      = sec;
+    _alarm.active   = true;
+    _alarmTriggered = false;
+}
+
+void Ds1302::clearAlarm() {
+    _alarm.active   = false;
+    _alarmTriggered = false;
+}
+
+bool Ds1302::checkAlarm() {
+    if (!_alarm.active) return false;
+
+    dateTime now;
+    getDateTime(&now);
+
+    bool match = (now.hour == _alarm.hour &&
+                  now.min  == _alarm.min  &&
+                  now.sec  == _alarm.sec);
+
+    if (match && !_alarmTriggered) {
+        _alarmTriggered = true;
+        return true;
+    }
+
+    if (!match) _alarmTriggered = false;
+
+    return false;
+}
+
+bool Ds1302::isAlarmActive() {
+    return _alarm.active;
 }
