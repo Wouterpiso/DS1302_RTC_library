@@ -1,7 +1,7 @@
 #include <ESP32-HUB75-MatrixPanel-I2S-DMA.h>
 #include <DS1302.hpp>
 
-// ================= RGB MATRIX CONFIG =================
+// RGB Matrix Panel Configuration
 #define PANEL_RES_X 64
 #define PANEL_RES_Y 64
 #define PANEL_CHAIN 1
@@ -21,70 +21,46 @@
 #define OE_PIN 15
 #define CLK_PIN 16
 
-MatrixPanel_I2S_DMA *dma_display = nullptr;
-
-// ================= DS1302 =================
 #define DS1302_RST 32
 #define DS1302_DAT 21
 #define DS1302_CLK 22
 
-Ds1302 rtc(DS1302_CLK, DS1302_DAT, DS1302_RST);
-
-// ================= COLORS =================
-uint16_t myBLACK, myWHITE, myRED, myGREEN, myBLUE;
-
-// ================= TIME STATE =================
-uint8_t STATE_YEAR = 0;
-uint8_t STATE_MONTH = 1;
-uint8_t STATE_DAY = 1;
-uint8_t STATE_HOUR = 0;
-uint8_t STATE_MINUTE = 0;
-
-uint8_t lastSecond = 255;
-uint8_t lastDisplayedDay = 99;
-
-// ================= DISPLAY TIMING =================
-unsigned long lastDisplayUpdateTime = 0;
-unsigned long lastColonToggleTime = 0;
-bool colonVisible = true;
-
-// ================= EDIT MODE =================
-bool editMode = false;
-
-enum Field {
-  YEAR,
-  MONTH,
-  DAY,
-  HOUR,
-  MINUTE,
-  CONFIRM
-};
-
-Field field = YEAR;
-
-unsigned long lastFieldBlink = 0;
-bool fieldVisible = true;
-
-// ================= BUTTON =================
 #define BUTTON_PIN 34
 
-enum Button {
-  NONE,
-  SW1_LEFT,
-  SW2_OK,
-  SW4_RIGHT
-};
+MatrixPanel_I2S_DMA *dma_display = nullptr;
+Ds1302 rtc(DS1302_CLK, DS1302_DAT, DS1302_RST);
 
-bool buttonWasDown = false;
+uint16_t myBLACK, myWHITE, myRED, myGREEN, myBLUE;
 
-// ================= HELPERS =================
-const uint8_t daysInMonth[] = {
-  31,28,31,30,31,30,31,31,30,31,30,31
-};
+enum Button { NONE, SW1_LEFT, SW2_OK, SW4_RIGHT };
 
-uint8_t getDaysInMonth(uint8_t month, uint8_t year) {
-  if (month == 2 && (year % 4 == 0)) return 29;
-  return daysInMonth[month - 1];
+bool editMode        = false;
+bool editScreenDirty = false;
+bool buttonWasDown   = false;
+
+enum Field { YEAR, MONTH, DAY, HOUR, MINUTE };
+Field field = YEAR;
+
+uint8_t STATE_YEAR   = 0;
+uint8_t STATE_MONTH  = 1;
+uint8_t STATE_DAY    = 1;
+uint8_t STATE_HOUR   = 0;
+uint8_t STATE_MINUTE = 0;
+
+unsigned long lastDisplayUpdateTime = 0;
+bool    colonVisible     = true;
+uint8_t lastSecond       = 255;
+uint8_t lastDisplayedDay = 99;
+uint8_t currentSecond    = 0;
+
+const uint8_t daysInMonth[] = {31,28,31,30,31,30,31,31,30,31,30,31};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Helpers
+// ─────────────────────────────────────────────────────────────────────────────
+uint8_t getDaysInMonth(uint8_t m, uint8_t y) {
+  if (m == 2 && (y % 4 == 0)) return 29;
+  return daysInMonth[m - 1];
 }
 
 void printTwoDigits(uint8_t value) {
@@ -92,210 +68,281 @@ void printTwoDigits(uint8_t value) {
   dma_display->print(value);
 }
 
-bool showField(Field f) {
-  if (!editMode) return true;
-  return (field != f) || fieldVisible;
+// ─────────────────────────────────────────────────────────────────────────────
+// Edit mode logic
+// ─────────────────────────────────────────────────────────────────────────────
+void applyTime() {
+  Ds1302::dateTime dt;
+  dt.year  = STATE_YEAR;
+  dt.month = STATE_MONTH;
+  dt.date  = STATE_DAY;
+  dt.hour  = STATE_HOUR;
+  dt.min   = STATE_MINUTE;
+  dt.sec   = 0;
+  dt.day   = 1;
+  currentSecond = 0;
+  lastSecond    = 255;
+  rtc.setDateTime(&dt);
 }
 
-// ================= BUTTON READ =================
-Button readButtonRaw() {
-  int val = analogRead(BUTTON_PIN);
-
-  if (val < 150)  return SW1_LEFT;
-  if (val < 700)  return SW2_OK;
-  if (val < 2100) return SW4_RIGHT;
-
-  return NONE;
-}
-
-// ================= ADJUST =================
 void adjust(int dir) {
   switch (field) {
-    case YEAR:   STATE_YEAR   = constrain(STATE_YEAR + dir, 0, 99); break;
-    case MONTH:  STATE_MONTH  = constrain(STATE_MONTH + dir, 1, 12); break;
-    case DAY:    STATE_DAY    = constrain(STATE_DAY + dir, 1, 31); break;
-    case HOUR:   STATE_HOUR   = constrain(STATE_HOUR + dir, 0, 23); break;
-    case MINUTE: STATE_MINUTE = constrain(STATE_MINUTE + dir, 0, 59); break;
+    case YEAR:   STATE_YEAR   = constrain((int)STATE_YEAR   + dir, 0,  99); break;
+    case MONTH:  STATE_MONTH  = constrain((int)STATE_MONTH  + dir, 1,  12); break;
+    case DAY:    STATE_DAY    = constrain((int)STATE_DAY    + dir, 1,  31); break;
+    case HOUR:   STATE_HOUR   = constrain((int)STATE_HOUR   + dir, 0,  23); break;
+    case MINUTE: STATE_MINUTE = constrain((int)STATE_MINUTE + dir, 0,  59); break;
     default: break;
   }
+  editScreenDirty = true;
 }
 
-// ================= BUTTON HANDLER =================
-void handleButtons() {
-  Button b = readButtonRaw();
-
-  if (b == NONE) {
-    buttonWasDown = false;
-    return;
-  }
-
-  if (buttonWasDown) return;
-  buttonWasDown = true;
-
+void processButton(Button b) {
   if (b == SW2_OK) {
     if (!editMode) {
-      editMode = true;
-      field = YEAR;
+      editMode        = true;
+      field           = YEAR;
+      editScreenDirty = true;
+      dma_display->fillScreen(myBLACK);
       return;
     }
-
-    if (field == CONFIRM) {
-      Ds1302::dateTime dt;
-      dt.year = STATE_YEAR;
-      dt.month = STATE_MONTH;
-      dt.date = STATE_DAY;
-      dt.hour = STATE_HOUR;
-      dt.min = STATE_MINUTE;
-      dt.sec = 0;
-      dt.day = 1;
-
-      rtc.setDateTime(&dt);
-      rtc.start();
-
-      editMode = false;
+    if (field == MINUTE) {
+      applyTime();
+      editMode              = false;
+      lastDisplayedDay      = 99;
+      lastDisplayUpdateTime = 0;
+      dma_display->fillScreen(myBLACK);
       return;
     }
-
     field = (Field)(field + 1);
+    editScreenDirty = true;
     return;
   }
 
   if (!editMode) return;
-
-  if (b == SW1_LEFT) adjust(-1);
+  if (b == SW1_LEFT)  adjust(-1);
   if (b == SW4_RIGHT) adjust(+1);
 }
 
-// ================= TIME UPDATE =================
-void updateTime() {
-  Ds1302::dateTime now;
-  rtc.getDateTime(&now);
+// ─────────────────────────────────────────────────────────────────────────────
+// Display: edit mode
+// ─────────────────────────────────────────────────────────────────────────────
+void displayEditMode() {
+  if (!editScreenDirty) return;
+  editScreenDirty = false;
 
-  STATE_YEAR = now.year;
-  STATE_MONTH = now.month;
-  STATE_DAY = now.date;
-  STATE_HOUR = now.hour;
-  STATE_MINUTE = now.min;
-  lastSecond = now.sec;
+  dma_display->fillScreen(myBLACK);
+
+  dma_display->setTextWrap(false);
+  dma_display->setTextSize(1);
+  dma_display->setTextColor(myRED);
+  dma_display->setCursor(2, 2);
+  dma_display->print("EDIT MODE");
+
+  const char* fieldNames[] = {"YEAR", "MON", "DAY", "HOUR", "MIN"};
+
+  dma_display->setTextSize(2);
+  dma_display->setTextColor(myWHITE);
+  dma_display->setCursor(2, 18);
+  dma_display->print(fieldNames[field]);
+
+  // Mirror exactly how seconds are drawn, same position logic
+  dma_display->setTextSize(1);
+  dma_display->setTextColor(myGREEN);
+  dma_display->setCursor(53, 25);
+
+  if (field == YEAR) printTwoDigits(STATE_YEAR);
+  else if (field == MONTH)  printTwoDigits(STATE_MONTH);
+  else if (field == DAY)      printTwoDigits(STATE_DAY);
+  else if (field == HOUR)     printTwoDigits(STATE_HOUR);
+  else if (field == MINUTE)   printTwoDigits(STATE_MINUTE);
 }
 
-// ================= DISPLAY =================
+// ─────────────────────────────────────────────────────────────────────────────
+// Display: clock
+// ─────────────────────────────────────────────────────────────────────────────
+void updateStates() {
+  Ds1302::dateTime now;
+  rtc.getDateTime(&now);
+  delay(5);
+
+  currentSecond = now.sec;
+
+  if (lastSecond != 255 && currentSecond == 0 && lastSecond != 0) {
+    STATE_MINUTE++;
+    if (STATE_MINUTE >= 60) {
+      STATE_MINUTE = 0;
+      STATE_HOUR++;
+      if (STATE_HOUR >= 24) {
+        STATE_HOUR = 0;
+        STATE_DAY++;
+        if (STATE_DAY > getDaysInMonth(STATE_MONTH, STATE_YEAR)) {
+          STATE_DAY = 1;
+          STATE_MONTH++;
+          if (STATE_MONTH > 12) { STATE_MONTH = 1; STATE_YEAR++; }
+        }
+        lastDisplayedDay = 99;
+      }
+    }
+  }
+  lastSecond = currentSecond;
+}
+
 void displayTime() {
-  unsigned long currentTime = millis();
+  unsigned long now = millis();
+  if (now - lastDisplayUpdateTime < 500) return;
+  lastDisplayUpdateTime = now;
 
-  if (currentTime - lastDisplayUpdateTime < 500) return;
-  lastDisplayUpdateTime = currentTime;
-
-  if (currentTime - lastColonToggleTime >= 500) {
-    colonVisible = !colonVisible;
-    lastColonToggleTime = currentTime;
-  }
-
-  if (editMode && (currentTime - lastFieldBlink >= 400)) {
-    fieldVisible = !fieldVisible;
-    lastFieldBlink = currentTime;
-  }
+  colonVisible = !colonVisible;
 
   dma_display->setTextSize(2);
   dma_display->setTextColor(myGREEN);
-
   dma_display->fillRect(0, 18, 64, 20, myBLACK);
 
   dma_display->setCursor(0, 18);
-
-  if (showField(HOUR)) printTwoDigits(STATE_HOUR);
-  else dma_display->print("  ");
+  printTwoDigits(STATE_HOUR);
 
   dma_display->setCursor(20, 18);
-
-  if (colonVisible) dma_display->print(":");
-  else dma_display->print(" ");
+  dma_display->print(colonVisible ? ":" : " ");
 
   dma_display->setCursor(28, 18);
-
-  if (showField(MINUTE)) printTwoDigits(STATE_MINUTE);
-  else dma_display->print("  ");
+  printTwoDigits(STATE_MINUTE);
 
   dma_display->setTextSize(1);
   dma_display->setCursor(53, 25);
-
-  if (!editMode) printTwoDigits(lastSecond);
-  else dma_display->print("  ");
+  printTwoDigits(currentSecond);
 }
 
-// ================= DATE =================
 void updateDateDisplay() {
+  if (lastDisplayedDay != 99 && lastDisplayedDay == STATE_DAY) return;
+
   const char* days[] = {"Sun","Mon","Tue","Wed","Thu","Fri","Sat"};
 
+  dma_display->setTextWrap(false);
   dma_display->setTextSize(1);
   dma_display->setTextColor(myBLUE);
-
-  dma_display->fillRect(2, 2, 60, 8, myBLACK);
+  dma_display->fillRect(0, 0, 64, 8, myBLACK);
   dma_display->setCursor(2, 2);
 
   char dateStr[11];
   sprintf(dateStr, "20%02d-%02d-%02d", STATE_YEAR, STATE_MONTH, STATE_DAY);
+  dma_display->print(dateStr);
 
-  if (showField(YEAR) || showField(MONTH) || showField(DAY))
-    dma_display->print(dateStr);
-  else
-    dma_display->print("           ");
+  Ds1302::dateTime now;
+  rtc.getDateTime(&now);
+  delay(5);
 
   dma_display->setTextColor(myGREEN);
-
-  dma_display->fillRect(2, 10, 60, 8, myBLACK);
+  dma_display->fillRect(0, 10, 64, 8, myBLACK);
   dma_display->setCursor(2, 10);
-
-  if (showField(DAY)) {
-    Ds1302::dateTime now;
-    rtc.getDateTime(&now);
-
-    if (now.day >= 1 && now.day <= 7)
-      dma_display->print(days[now.day - 1]);
+  if (now.day >= 1 && now.day <= 7) {
+    dma_display->print(days[now.day - 1]);
+    lastDisplayedDay = now.day;
   }
 }
 
-// ================= SETUP =================
+// ─────────────────────────────────────────────────────────────────────────────
+// Setup
+// ─────────────────────────────────────────────────────────────────────────────
 void setup() {
   Serial.begin(115200);
 
   rtc.initiate();
   delay(50);
-
   if (rtc.ishalted()) rtc.start();
 
   Ds1302::dateTime now;
   rtc.getDateTime(&now);
+  delay(10);
 
-  STATE_YEAR = now.year;
-  STATE_MONTH = now.month;
-  STATE_DAY = now.date;
-  STATE_HOUR = now.hour;
-  STATE_MINUTE = now.min;
-  lastSecond = now.sec;
+  STATE_YEAR       = now.year;
+  STATE_MONTH      = now.month;
+  STATE_DAY        = now.date;
+  STATE_HOUR       = now.hour;
+  STATE_MINUTE     = now.min;
+  lastSecond       = now.sec;
   lastDisplayedDay = now.day;
 
   HUB75_I2S_CFG mxconfig(PANEL_RES_X, PANEL_RES_Y, PANEL_CHAIN);
-  mxconfig.gpio.e = E_PIN;
+  mxconfig.gpio.e   = E_PIN;
+  mxconfig.clkphase = false;
 
   dma_display = new MatrixPanel_I2S_DMA(mxconfig);
   dma_display->begin();
   dma_display->setBrightness8(90);
   dma_display->clearScreen();
 
-  myBLACK = dma_display->color565(0,0,0);
-  myGREEN = dma_display->color565(0,255,0);
-  myBLUE  = dma_display->color565(0,0,255);
+  myBLACK = dma_display->color565(0,   0,   0);
+  myWHITE = dma_display->color565(255, 255, 255);
+  myRED   = dma_display->color565(255, 0,   0);
+  myGREEN = dma_display->color565(0,   255, 0);
+  myBLUE  = dma_display->color565(0,   0,   255);
+
+  dma_display->fillScreen(myBLACK);
+
+  Serial.println("Ready");
 }
 
-// ================= LOOP =================
+// ─────────────────────────────────────────────────────────────────────────────
+// Loop
+// ─────────────────────────────────────────────────────────────────────────────
 void loop() {
-  handleButtons();
+  unsigned long now = millis();
 
-  if (!editMode) {
-    updateTime();
+  static unsigned long lastButtonCheck = 0;
+  static uint8_t noneCount = 0;  // consecutive NONE readings needed to reset
+
+  if (now - lastButtonCheck >= 20) {
+    lastButtonCheck = now;
+
+    int val = analogRead(BUTTON_PIN);
+    Button b = NONE;
+    if      (val < 150)  b = SW1_LEFT;
+    else if (val < 700)  b = SW2_OK;
+    else if (val < 1400) b = NONE;
+    else if (val < 2100) b = SW4_RIGHT;
+
+    if (b == NONE) {
+      noneCount++;
+      if (noneCount >= 3) {
+        buttonWasDown = false;  // only release after 3 consecutive NONE reads
+        noneCount = 0;
+      }
+    } else {
+      noneCount = 0;  // reset counter if button is still held
+      if (!buttonWasDown) {
+        buttonWasDown = true;
+        processButton(b);
+      }
+    }
+    return;
   }
 
-  displayTime();
-  updateDateDisplay();
+  // Edit mode display — only redraws when dirty
+  if (editMode) {
+    displayEditMode();
+    return;
+  }
+
+  // Clock tasks
+  static unsigned long lastStateUpdate = 0;
+  if (now - lastStateUpdate >= 200) {
+    lastStateUpdate = now;
+    updateStates();
+    return;
+  }
+
+  static unsigned long lastTimeDisplay = 0;
+  if (now - lastTimeDisplay >= 500) {
+    lastTimeDisplay = now;
+    displayTime();
+    return;
+  }
+
+  static unsigned long lastDateDisplay = 0;
+  if (now - lastDateDisplay >= 1000) {
+    lastDateDisplay = now;
+    updateDateDisplay();
+    return;
+  }
 }
