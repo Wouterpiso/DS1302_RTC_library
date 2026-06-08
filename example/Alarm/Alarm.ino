@@ -1,13 +1,22 @@
 #include <DS1302.hpp>
 
+// ─────────────────────────────────────────────────────────────────────────────
+// DS1302 RTC configuration
+// ─────────────────────────────────────────────────────────────────────────────
 #define DS1302_RST 32
 #define DS1302_DAT 21
 #define DS1302_CLK 22
 
 Ds1302 rtc(DS1302_CLK, DS1302_DAT, DS1302_RST);
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Alarm state
+// ─────────────────────────────────────────────────────────────────────────────
 bool alarmRinging = false;
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Helpers
+// ─────────────────────────────────────────────────────────────────────────────
 void printTwoDigits(uint8_t value) {
   if (value < 10) Serial.print('0');
   Serial.print(value);
@@ -29,6 +38,9 @@ void printTime(Ds1302::dateTime& dt) {
   Serial.println();
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Setup
+// ─────────────────────────────────────────────────────────────────────────────
 void setup() {
   Serial.begin(115200);
   delay(500);
@@ -38,6 +50,7 @@ void setup() {
   rtc.halt();
   delay(50);
 
+  // Set an initial date/time
   Ds1302::dateTime setTime;
   setTime.year  = 26;
   setTime.month = 6;
@@ -52,6 +65,7 @@ void setup() {
   rtc.start();
   delay(100);
 
+  // Schedule an alarm 10 seconds in the future
   uint8_t alarmSec = (setTime.sec + 10) % 60;
   uint8_t alarmMin = setTime.min + ((setTime.sec + 10) >= 60 ? 1 : 0);
   rtc.setAlarm(setTime.hour, alarmMin, alarmSec);
@@ -59,7 +73,12 @@ void setup() {
   Serial.println("Clock started. Alarm in 10 seconds.");
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Loop
+// ─────────────────────────────────────────────────────────────────────────────
 void loop() {
+
+  // Alarm active
   if (alarmRinging) {
     Serial.println("*** ALARM! *** Press any key to stop.");
 
@@ -74,11 +93,13 @@ void loop() {
     return;
   }
 
+  // Alarm triggered
   if (rtc.checkAlarm()) {
     alarmRinging = true;
     return;
   }
 
+  // Normal clock display
   Ds1302::dateTime now;
   rtc.getDateTime(&now);
   printTime(now);

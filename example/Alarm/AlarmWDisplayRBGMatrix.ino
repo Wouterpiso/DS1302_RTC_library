@@ -1,7 +1,9 @@
 #include <ESP32-HUB75-MatrixPanel-I2S-DMA.h>
 #include <DS1302.hpp>
 
-// RGB Matrix Panel Configuration
+// ─────────────────────────────────────────────────────────────────────────────
+// RGB matrix panel configuration
+// ─────────────────────────────────────────────────────────────────────────────
 #define PANEL_RES_X 64
 #define PANEL_RES_Y 64
 #define PANEL_CHAIN 1
@@ -42,7 +44,9 @@ bool colonVisible    = true;
 uint8_t lastSecond   = 255;
 uint8_t lastDisplayedDay = 99;
 
+// ─────────────────────────────────────────────────────────────────────────────
 // Alarm state
+// ─────────────────────────────────────────────────────────────────────────────
 bool alarmRunning        = false;
 unsigned long alarmStart = 0;
 #define ALARM_DURATION_MS 10000
@@ -54,7 +58,9 @@ uint8_t getDaysInMonth(uint8_t month, uint8_t year) {
   return daysInMonth[month - 1];
 }
 
-// --- Rainbow animation ---
+// ─────────────────────────────────────────────────────────────────────────────
+// Alarm animation
+// ─────────────────────────────────────────────────────────────────────────────
 
 uint16_t hsvToColor565(uint8_t h, uint8_t s, uint8_t v) {
   uint8_t r, g, b;
@@ -79,22 +85,37 @@ uint16_t hsvToColor565(uint8_t h, uint8_t s, uint8_t v) {
 }
 
 void drawRainbowFrame(uint8_t offset) {
-  for (int y = 0; y < PANEL_RES_Y; y++) {
-    for (int x = 0; x < PANEL_RES_X; x++) {
+  const int startX = 0;
+  const int startY = 0;
+  const int endX   = 63;
+  const int endY   = 31;
+
+  for (int y = startY; y <= endY; y++) {
+    for (int x = startX; x <= endX; x++) {
       uint8_t hue = (uint8_t)(x + y + offset);
-      dma_display->drawPixelRGB888(x, y,
-        (hue * 6) % 256,          // R
-        (hue * 3 + 85) % 256,     // G
-        (255 - hue * 6) % 256     // B
+
+      dma_display->drawPixelRGB888(
+        x, y,
+        (hue * 6) % 256,
+        (hue * 3 + 85) % 256,
+        (255 - hue * 6) % 256
       );
     }
   }
 
-  // Print ALARM text on top of rainbow
+  if ((millis() / 250) % 2) {
+    dma_display->setTextColor(myWHITE);
+  } else {
+    dma_display->setTextColor(myRED);
+  }
+
   dma_display->setTextSize(2);
-  dma_display->setTextColor(myWHITE);
-  dma_display->setCursor(4, 24);
-  dma_display->print("ALARM");
+
+  dma_display->setCursor(8, 1);
+  dma_display->print("WAKE");
+
+  dma_display->setCursor(5, 17);
+  dma_display->print("UP!!!!");
 }
 
 void runAlarmAnimation() {
@@ -103,26 +124,25 @@ void runAlarmAnimation() {
 
   unsigned long now = millis();
 
-  // Draw a new frame every 30ms (~33fps)
   if (now - lastFrame >= 30) {
     lastFrame = now;
     drawRainbowFrame(rainbowOffset);
     rainbowOffset += 3;
   }
 
-  // Stop after ALARM_DURATION_MS
   if (now - alarmStart >= ALARM_DURATION_MS) {
     alarmRunning = false;
     rtc.clearAlarm();
     dma_display->clearScreen();
 
-    // Force full redraw of clock
     lastDisplayedDay = 99;
     lastDisplayUpdateTime = 0;
   }
 }
 
-// --- Clock display ---
+// ─────────────────────────────────────────────────────────────────────────────
+// Clock display
+// ─────────────────────────────────────────────────────────────────────────────
 
 void printTwoDigits(uint8_t value) {
   if (value < 10) dma_display->print('0');
@@ -249,14 +269,13 @@ void setup() {
 
   myBLACK = dma_display->color565(0, 0, 0);
   myWHITE = dma_display->color565(255, 255, 255);
-  myRED   = dma_display->color565(255, 0, 0);
-  myGREEN = dma_display->color565(0, 255, 0);
-  myBLUE  = dma_display->color565(0, 0, 255);
+  myRED   = dma_display->color565(0, 0, 255);
+  myGREEN = dma_display->color565(255, 0, 0);
+  myBLUE  = dma_display->color565(0, 255, 0);
 
   dma_display->fillScreen(myBLACK);
   dma_display->setTextWrap(false);
 
-  // Set alarm 10 seconds from current time
   uint8_t alarmSec = (now.sec + 10) % 60;
   uint8_t alarmMin = now.min + ((now.sec + 10) >= 60 ? 1 : 0);
   rtc.setAlarm(now.hour, alarmMin, alarmSec);
@@ -265,20 +284,17 @@ void setup() {
 }
 
 void loop() {
-  // If alarm is running, only do the animation
   if (alarmRunning) {
     runAlarmAnimation();
     return;
   }
 
-  // Check if alarm just fired
   if (rtc.checkAlarm()) {
     alarmRunning = true;
     alarmStart   = millis();
     return;
   }
 
-  // Normal clock operation
   updateStates();
   displayTime();
   updateDateDisplay();

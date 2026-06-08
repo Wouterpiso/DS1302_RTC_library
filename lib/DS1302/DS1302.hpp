@@ -3,93 +3,172 @@
 
 #include <stdint.h>
 
-class Ds1302{
-    public:
-        typedef struct {
-            uint8_t sec;
-            uint8_t min;
-            uint8_t hour;
-            uint8_t date;
-            uint8_t month;
-            uint8_t day;
-            uint8_t year;
-        } dateTime;
+// ─────────────────────────────────────────────────────────────────────────────
+// DS1302 RTC Driver (3-wire bit-banged interface)
+// ─────────────────────────────────────────────────────────────────────────────
+// Provides low-level communication + high-level time/alarm functions for
+// the DS1302 real-time clock chip.
+//
+// Supports:
+// - Date/time read & write
+// - RTC start/stop (oscillator control)
+// - Write protection handling
+// - Simple software alarm system
+// ─────────────────────────────────────────────────────────────────────────────
 
-        typedef struct {
-            uint8_t hour;
-            uint8_t min;
-            uint8_t sec;
-            bool    active;
-        } alarmTime;
+class Ds1302 {
+public:
 
-        enum month : uint8_t {
-            JANUARY = 1,
-            FEBRUARY = 2,
-            MARCH = 3,
-            APRIL = 4,
-            MAY = 5,
-            JUNE = 6,
-            JULY = 7,
-            AUGUST = 8,
-            SEPTEMBER = 9,
-            OCTOBER = 10,
-            NOVEMBER = 11,
-            DECEMBER = 12
-        };
+    // ─────────────────────────────────────────────────────────────────────────
+    // Date/Time structure (RTC format)
+    // ─────────────────────────────────────────────────────────────────────────
+    typedef struct {
+        uint8_t sec;
+        uint8_t min;
+        uint8_t hour;
+        uint8_t date;
+        uint8_t month;
+        uint8_t day;
+        uint8_t year;
+    } dateTime;
 
-        enum day : uint8_t {
-            SUNDAY = 1,
-            MONDAY = 2,
-            TUESDAY = 3,
-            WEDNESDAY = 4,
-            THURSDAY = 5,
-            FRIDAY = 6,
-            SATURDAY = 7
-        };
+    // ─────────────────────────────────────────────────────────────────────────
+    // Alarm structure (software-based alarm tracking)
+    // NOTE: DS1302 has no true alarm hardware; this is handled in software.
+    // ─────────────────────────────────────────────────────────────────────────
+    typedef struct {
+        uint8_t hour;
+        uint8_t min;
+        uint8_t sec;
+        bool    active;
+    } alarmTime;
 
-        Ds1302(uint8_t clockPin, uint8_t dataPin, uint8_t resetPin);
-        
-        void start();
-        void halt();
-        void initiate();
+    // ─────────────────────────────────────────────────────────────────────────
+    // Month enumeration (1–12)
+    // ─────────────────────────────────────────────────────────────────────────
+    enum month : uint8_t {
+        JANUARY = 1,
+        FEBRUARY,
+        MARCH,
+        APRIL,
+        MAY,
+        JUNE,
+        JULY,
+        AUGUST,
+        SEPTEMBER,
+        OCTOBER,
+        NOVEMBER,
+        DECEMBER
+    };
 
-        bool ishalted();
+    // ─────────────────────────────────────────────────────────────────────────
+    // Day-of-week enumeration (1–7)
+    // ─────────────────────────────────────────────────────────────────────────────
+    enum day : uint8_t {
+        SUNDAY = 1,
+        MONDAY,
+        TUESDAY,
+        WEDNESDAY,
+        THURSDAY,
+        FRIDAY,
+        SATURDAY
+    };
 
-        void disableWriteProtect();
+    // ─────────────────────────────────────────────────────────────────────────
+    // Constructor
+    // ─────────────────────────────────────────────────────────────────────────
+    Ds1302(uint8_t clockPin, uint8_t dataPin, uint8_t resetPin);
 
-        void getDateTime(dateTime* dateTime);
-        void setDateTime(dateTime* dateTime);
+    // ─────────────────────────────────────────────────────────────────────────
+    // RTC control
+    // ─────────────────────────────────────────────────────────────────────────
 
-        void setAlarm(uint8_t hour, uint8_t min, uint8_t sec);
-        void clearAlarm();
-        bool checkAlarm();
-        bool isAlarmActive();
+    // Initialize GPIO pins (must be called before use)
+    void initiate();
 
-        uint8_t readRegister(uint8_t reg);
+    // Start RTC oscillator (clears halt state + enables timekeeping)
+    void start();
 
-    private:
-        uint8_t _clockPin;
-        uint8_t _dataPin;
-        uint8_t _resetPin;
+    // Stop RTC oscillator (halts timekeeping)
+    void halt();
 
-        alarmTime _alarm;
-        bool      _alarmTriggered;
+    // Returns true if oscillator is currently halted
+    bool ishalted();
 
-        void prepRead(uint8_t address);
-        void prepWrite(uint8_t address);
-        void end();
+    // Disable write protection to allow register updates
+    void disableWriteProtect();
 
-        int dataDitection();
-        void setDataDirection(int direction);
+    // ─────────────────────────────────────────────────────────────────────────
+    // Time access
+    // ─────────────────────────────────────────────────────────────────────────
 
-        uint8_t readByte();
-        void writeByte(uint8_t val);
-        void nextBit();
+    // Reads full date/time using burst mode
+    void getDateTime(dateTime* dateTime);
 
-        uint8_t bcdToDec(uint8_t dec);
-        uint8_t decToBcd(uint8_t bcd);
+    // Writes full date/time using burst mode
+    void setDateTime(dateTime* dateTime);
 
-        void setHaltFlag(bool halt);
+    // ─────────────────────────────────────────────────────────────────────────
+    // Alarm system (software-based)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    // Set alarm time (hour/min/sec)
+    void setAlarm(uint8_t hour, uint8_t min, uint8_t sec);
+
+    // Disable alarm
+    void clearAlarm();
+
+    // Check if alarm condition is currently triggered
+    bool checkAlarm();
+
+    // Returns whether alarm is enabled
+    bool isAlarmActive();
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Low-level register access
+    // ─────────────────────────────────────────────────────────────────────────
+    uint8_t readRegister(uint8_t reg);
+
+private:
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Hardware pins (3-wire interface)
+    // ─────────────────────────────────────────────────────────────────────────
+    uint8_t _clockPin;
+    uint8_t _dataPin;
+    uint8_t _resetPin;
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Alarm state
+    // ─────────────────────────────────────────────────────────────────────────
+    alarmTime _alarm;
+    bool      _alarmTriggered;
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Low-level communication helpers
+    // ─────────────────────────────────────────────────────────────────────────
+
+    void prepRead(uint8_t address);
+    void prepWrite(uint8_t address);
+    void end();
+
+    int  dataDitection();
+    void setDataDirection(int direction);
+
+    uint8_t readByte();
+    void writeByte(uint8_t val);
+    void nextBit();
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Data format conversion (BCD ↔ decimal)
+    // ─────────────────────────────────────────────────────────────────────────
+    uint8_t bcdToDec(uint8_t dec);
+    uint8_t decToBcd(uint8_t bcd);
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Internal control (oscillator / halt bit management)
+    // ─────────────────────────────────────────────────────────────────────────
+    void setHaltFlag(bool halt);
 };
 
 #endif

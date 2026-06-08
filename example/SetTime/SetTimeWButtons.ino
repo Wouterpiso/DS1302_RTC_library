@@ -1,16 +1,25 @@
 #include <DS1302.hpp>
 
-// ================= PINS =================
+// ─────────────────────────────────────────────────────────────────────────────
+// Hardware pin mapping (DS1302 RTC + analog button input)
+// ─────────────────────────────────────────────────────────────────────────────
+
 #define DS1302_RST 32
 #define DS1302_DAT 21
 #define DS1302_CLK 22
 
 #define BUTTON_PIN 34
 
-// ================= RTC =================
+// ─────────────────────────────────────────────────────────────────────────────
+// RTC instance
+// ─────────────────────────────────────────────────────────────────────────────
+
 Ds1302 rtc(DS1302_CLK, DS1302_DAT, DS1302_RST);
 
-// ================= BUTTON ENUM =================
+// ─────────────────────────────────────────────────────────────────────────────
+// Button definitions (analog resistor ladder)
+// ─────────────────────────────────────────────────────────────────────────────
+
 enum Button {
   NONE,
   SW1_LEFT,
@@ -18,7 +27,10 @@ enum Button {
   SW4_RIGHT
 };
 
-// ================= FIELD NAMES =================
+// ─────────────────────────────────────────────────────────────────────────────
+// Field labels (for debug output / UI mapping)
+// ─────────────────────────────────────────────────────────────────────────────
+
 const char* fieldNames[] = {
   "YEAR",
   "MONTH",
@@ -28,7 +40,10 @@ const char* fieldNames[] = {
   "CONFIRM"
 };
 
-// ================= EDIT MODE =================
+// ─────────────────────────────────────────────────────────────────────────────
+// Edit mode state machine
+// ─────────────────────────────────────────────────────────────────────────────
+
 bool editMode = false;
 
 enum Field {
@@ -42,21 +57,30 @@ enum Field {
 
 Field field = YEAR;
 
-// ================= TIME STORAGE =================
+// ─────────────────────────────────────────────────────────────────────────────
+// Time buffer (local editable copy before writing to RTC)
+// ─────────────────────────────────────────────────────────────────────────────
+
 uint8_t year = 26;
 uint8_t month = 1;
 uint8_t day = 1;
 uint8_t hour = 0;
 uint8_t minute = 0;
 
-// ================= SIMPLE BUTTON STATE (FIXED) =================
+// ─────────────────────────────────────────────────────────────────────────────
+// Button debounce / edge detection
+// ─────────────────────────────────────────────────────────────────────────────
+
 bool buttonWasDown = false;
 
-// ================= READ BUTTON =================
+// ─────────────────────────────────────────────────────────────────────────────
+// Reads raw analog button input and maps it to logical button events
+// ─────────────────────────────────────────────────────────────────────────────
+
 Button readButtonRaw() {
   int val = analogRead(BUTTON_PIN);
 
-  Serial.println(val); // debug
+  Serial.println(val); // debug raw ADC value
 
   if (val < 150)  return SW1_LEFT;
   if (val < 700)  return SW2_OK;
@@ -66,14 +90,18 @@ Button readButtonRaw() {
   return NONE;
 }
 
-// ================= SETUP =================
+// ─────────────────────────────────────────────────────────────────────────────
+// Setup
+// Initializes RTC and loads current time into local variables
+// ─────────────────────────────────────────────────────────────────────────────
+
 void setup() {
   Serial.begin(115200);
 
   rtc.initiate();
   rtc.start();
 
-  // Load time from RTC
+  // Load time from RTC into local editable state
   Ds1302::dateTime now;
   rtc.getDateTime(&now);
 
@@ -86,7 +114,10 @@ void setup() {
   Serial.println("System ready");
 }
 
-// ================= APPLY TIME =================
+// ─────────────────────────────────────────────────────────────────────────────
+// Writes edited time back to RTC
+// ─────────────────────────────────────────────────────────────────────────────
+
 void applyTime() {
   Ds1302::dateTime dt;
 
@@ -102,7 +133,10 @@ void applyTime() {
   rtc.start();
 }
 
-// ================= ADJUST VALUE =================
+// ─────────────────────────────────────────────────────────────────────────────
+// Adjusts currently selected field value in edit mode
+// ─────────────────────────────────────────────────────────────────────────────
+
 void adjust(int dir) {
   switch (field) {
 
@@ -131,21 +165,27 @@ void adjust(int dir) {
   }
 }
 
-// ================= BUTTON HANDLER (FIXED PROPER EDGE DETECTION) =================
+// ─────────────────────────────────────────────────────────────────────────────
+// Button handling (edge-detected input, prevents repeated triggers)
+// ─────────────────────────────────────────────────────────────────────────────
+
 void handleButtons() {
   Button b = readButtonRaw();
 
-  // ================= RELEASE DETECTION =================
+  // Reset edge state when no button is pressed
   if (b == NONE) {
     buttonWasDown = false;
     return;
   }
 
-  // ================= ONLY ONE TRIGGER PER PRESS =================
+  // Prevent multiple triggers while holding button
   if (buttonWasDown) return;
   buttonWasDown = true;
 
-  // ================= SW2 (NAVIGATION + CONFIRM) =================
+  // ───────────────────────────────────────────────────────────────────────────
+  // SW2: enter edit mode, cycle fields, or confirm save
+  // ───────────────────────────────────────────────────────────────────────────
+
   if (b == SW2_OK) {
 
     if (!editMode) {
@@ -166,16 +206,27 @@ void handleButtons() {
     return;
   }
 
+  // Ignore adjustments unless in edit mode
   if (!editMode) return;
 
-  // ================= VALUE CHANGE (NOW REPEATABLE CORRECTLY) =================
-  if (b == SW1_LEFT) adjust(-1);
+  // ───────────────────────────────────────────────────────────────────────────
+  // Value adjustment (LEFT / RIGHT)
+  // ───────────────────────────────────────────────────────────────────────────
+
+  if (b == SW1_LEFT)  adjust(-1);
   if (b == SW4_RIGHT) adjust(+1);
 }
 
-// ================= LOOP =================
+// ─────────────────────────────────────────────────────────────────────────────
+// Main loop
+// ─────────────────────────────────────────────────────────────────────────────
+
 void loop() {
   handleButtons();
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // Normal mode: print live RTC time
+  // ───────────────────────────────────────────────────────────────────────────
 
   if (!editMode) {
     Ds1302::dateTime now;
@@ -193,7 +244,12 @@ void loop() {
     Serial.print(now.min);
     Serial.print(":");
     Serial.println(now.sec);
-  } 
+  }
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // Edit mode: print currently edited values
+  // ───────────────────────────────────────────────────────────────────────────
+
   else {
     Serial.print("EDITING: ");
     Serial.print(fieldNames[field]);
