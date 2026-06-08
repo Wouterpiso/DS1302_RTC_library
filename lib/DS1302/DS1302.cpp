@@ -1,11 +1,13 @@
 #include "DS1302.h"
 #include <Arduino.h>
 
-// ─────────────────────────────────────────────────────────────────────────────
-// DS1302 Register Map + Bit Definitions
-// ─────────────────────────────────────────────────────────────────────────────
-// These constants define DS1302 memory/register addresses and control bits.
-// The chip uses a bit-addressed protocol with LSB-first data transfer.
+/**
+ * @file DS1302.cpp
+ * @brief Implementation of DS1302 RTC driver
+ *
+ * This file contains the low-level implementation of the DS1302
+ * communication protocol and high-level RTC functions.
+ */
 
 // DS1302 register addresses
 static constexpr uint8_t REG_SECONDS = 0x80;

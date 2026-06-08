@@ -2,18 +2,12 @@
 
 #include <stdint.h>
 
-// ─────────────────────────────────────────────────────────────────────────────
-// DS1302 RTC Driver (3-wire bit-banged interface)
-// ─────────────────────────────────────────────────────────────────────────────
-// Provides low-level communication + high-level time/alarm functions for
-// the DS1302 real-time clock chip.
-//
-// Supports:
-// - Date/time read & write
-// - RTC start/stop (oscillator control)
-// - Write protection handling
-// - Simple software alarm system
-// ─────────────────────────────────────────────────────────────────────────────
+/**
+ * @class DS1302
+ * @brief Main class for DS1302 RTC communication.
+ *
+ * Handles reading and writing time from the RTC chip.
+ */
 
 class Ds1302 {
 public:
