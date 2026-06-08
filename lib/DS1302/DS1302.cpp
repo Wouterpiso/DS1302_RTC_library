@@ -1,4 +1,4 @@
-#include "DS1302.hpp"
+#include "DS1302.h"
 #include <Arduino.h>
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -7,23 +7,27 @@
 // These constants define DS1302 memory/register addresses and control bits.
 // The chip uses a bit-addressed protocol with LSB-first data transfer.
 
-#define REG_SECONDS 0x80
-#define REG_MINUTES 0x82
-#define REG_HOURS   0x84
-#define REG_DATE    0x86
-#define REG_MONTH   0x88
-#define REG_DAY     0x8A
-#define REG_YEAR    0x8C
-#define REG_WP      0x8E
-#define REG_BURST   0xBE
+// DS1302 register addresses
+static constexpr uint8_t REG_SECONDS = 0x80;
+static constexpr uint8_t REG_MINUTES = 0x82;
+static constexpr uint8_t REG_HOURS   = 0x84;
+static constexpr uint8_t REG_DATE    = 0x86;
+static constexpr uint8_t REG_MONTH   = 0x88;
+static constexpr uint8_t REG_DAY     = 0x8A;
+static constexpr uint8_t REG_YEAR    = 0x8C;
+static constexpr uint8_t REG_WP      = 0x8E;
+static constexpr uint8_t REG_BURST   = 0xBE;
 
-#define READ_FLAG   0x01
+// Protocol flags
+static constexpr uint8_t READ_FLAG = 0x01;
 
-#define REG_SECONDS_READ  (REG_SECONDS | READ_FLAG)
-#define REG_BURST_READ    (REG_BURST | READ_FLAG)
+// Derived read addresses
+static constexpr uint8_t REG_SECONDS_READ = REG_SECONDS | READ_FLAG;
+static constexpr uint8_t REG_BURST_READ   = REG_BURST   | READ_FLAG;
 
-#define CH_BIT      0x80   // Clock Halt bit (seconds register)
-#define HOUR_MASK   0x3F   // 24h mode mask (not always used)
+// Bit masks
+static constexpr uint8_t CH_BIT    = 0x80;
+static constexpr uint8_t HOUR_MASK = 0x3F;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Constructor
@@ -53,7 +57,7 @@ uint8_t Ds1302::decToBcd(uint8_t dec) {
 // GPIO helpers (data line direction control)
 // ─────────────────────────────────────────────────────────────────────────────
 
-int Ds1302::dataDitection() {
+int Ds1302::dataDirection() {
     return digitalRead(_dataPin);
 }
 
@@ -124,7 +128,7 @@ void Ds1302::setHaltFlag(bool halt) {
 // ─────────────────────────────────────────────────────────────────────────────
 // Returns true if oscillator is stopped (CH bit set).
 
-bool Ds1302::ishalted() {
+bool Ds1302::isHalted() {
     prepRead(REG_SECONDS_READ);
     uint8_t sec = readByte();
     end();
@@ -229,7 +233,7 @@ void Ds1302::writeByte(uint8_t val) {
 // ─────────────────────────────────────────────────────────────────────────────
 // Reads full date/time block in one transaction.
 
-void Ds1302::getDateTime(dateTime* dt) {
+void Ds1302::getDateTime(DateTime* dt) {
     prepRead(REG_BURST_READ);
 
     uint8_t sec   = readByte();
@@ -256,7 +260,7 @@ void Ds1302::getDateTime(dateTime* dt) {
 // High-level RTC write (burst mode)
 // ─────────────────────────────────────────────────────────────────────────────
 
-void Ds1302::setDateTime(dateTime* dt) {
+void Ds1302::setDateTime(DateTime* dt) {
     disableWriteProtect();
 
     prepWrite(REG_BURST);
@@ -306,7 +310,7 @@ void Ds1302::clearAlarm() {
 bool Ds1302::checkAlarm() {
     if (!_alarm.active) return false;
 
-    dateTime now;
+    DateTime now;
     getDateTime(&now);
 
     bool match =

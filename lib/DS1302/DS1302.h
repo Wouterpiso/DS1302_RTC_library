@@ -1,5 +1,4 @@
-#ifndef DS_1302
-#define DS_1302
+#pragma once
 
 #include <stdint.h>
 
@@ -22,7 +21,7 @@ public:
     // ─────────────────────────────────────────────────────────────────────────
     // Date/Time structure (RTC format)
     // ─────────────────────────────────────────────────────────────────────────
-    typedef struct {
+    struct dateTime {
         uint8_t sec;
         uint8_t min;
         uint8_t hour;
@@ -30,18 +29,19 @@ public:
         uint8_t month;
         uint8_t day;
         uint8_t year;
-    } dateTime;
+    };
 
     // ─────────────────────────────────────────────────────────────────────────
     // Alarm structure (software-based alarm tracking)
     // NOTE: DS1302 has no true alarm hardware; this is handled in software.
     // ─────────────────────────────────────────────────────────────────────────
-    typedef struct {
-        uint8_t hour;
-        uint8_t min;
+
+    struct AlarmTime {
         uint8_t sec;
+        uint8_t min;
+        uint8_t hour;
         bool    active;
-    } alarmTime;
+    };
 
     // ─────────────────────────────────────────────────────────────────────────
     // Month enumeration (1–12)
@@ -93,7 +93,7 @@ public:
     void halt();
 
     // Returns true if oscillator is currently halted
-    bool ishalted();
+    bool isHalted();
 
     // Disable write protection to allow register updates
     void disableWriteProtect();
@@ -141,7 +141,7 @@ private:
     // ─────────────────────────────────────────────────────────────────────────
     // Alarm state
     // ─────────────────────────────────────────────────────────────────────────
-    alarmTime _alarm;
+    AlarmTime _alarm;
     bool      _alarmTriggered;
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -152,7 +152,7 @@ private:
     void prepWrite(uint8_t address);
     void end();
 
-    int  dataDitection();
+    int  dataDirection();
     void setDataDirection(int direction);
 
     uint8_t readByte();
@@ -170,5 +170,3 @@ private:
     // ─────────────────────────────────────────────────────────────────────────
     void setHaltFlag(bool halt);
 };
-
-#endif
