@@ -14,6 +14,7 @@ from the DS1302 chip using a 3-wire communication protocol.
 - Compatible with Arduino, ESP8266, ESP32
 - Low-level register access (if exposed in implementation)
 - Optional RAM read/write support
+- Alarm functionality is software-based.
 
 ---
 

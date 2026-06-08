@@ -6,161 +6,156 @@
 \DoxyCodeLine{00002\ }
 \DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <stdint.h>}}
 \DoxyCodeLine{00004\ }
-\DoxyCodeLine{00011\ }
-\DoxyCodeLine{00012\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_ds1302_aed873a4f3bba68ef6acf2668f897ed9b}{Ds1302}}\ \{}
-\DoxyCodeLine{00013\ \textcolor{keyword}{public}:}
 \DoxyCodeLine{00014\ }
-\DoxyCodeLine{00015\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
-\DoxyCodeLine{00016\ \ \ \ \ \textcolor{comment}{//\ Date/Time\ structure\ (RTC\ format)}}
-\DoxyCodeLine{00017\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
-\DoxyCodeLine{00018\ \ \ \ \ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_ds1302_1_1date_time}{dateTime}}\ \{}
-\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ uint8\_t\ \doxymbox{\hyperlink{struct_ds1302_1_1date_time_aa5cf0df40268c8ae94f80c12f64f69e6}{sec}};}
-\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ uint8\_t\ \doxymbox{\hyperlink{struct_ds1302_1_1date_time_ab3c7c00f9415d8cb391f920e7bd6c58e}{min}};}
-\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ uint8\_t\ \doxymbox{\hyperlink{struct_ds1302_1_1date_time_a01c27fd50fc4df793b7a3401dca9b280}{hour}};}
-\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ uint8\_t\ \doxymbox{\hyperlink{struct_ds1302_1_1date_time_a706f633e42ee8953a250b26dfeea8a6c}{date}};}
-\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ uint8\_t\ \doxymbox{\hyperlink{struct_ds1302_1_1date_time_af03180644132022b643c008d0466085c}{month}};}
-\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ uint8\_t\ \doxymbox{\hyperlink{struct_ds1302_1_1date_time_ae340b6114e1cf7620c9daa0d29eb5044}{day}};}
-\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ uint8\_t\ \doxymbox{\hyperlink{struct_ds1302_1_1date_time_ab385bbe3a6dba867df82460dd7eedf65}{year}};}
-\DoxyCodeLine{00026\ \ \ \ \ \};}
-\DoxyCodeLine{00027\ }
-\DoxyCodeLine{00028\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
-\DoxyCodeLine{00029\ \ \ \ \ \textcolor{comment}{//\ Alarm\ structure\ (software-\/based\ alarm\ tracking)}}
-\DoxyCodeLine{00030\ \ \ \ \ \textcolor{comment}{//\ NOTE:\ DS1302\ has\ no\ true\ alarm\ hardware;\ this\ is\ handled\ in\ software.}}
+\DoxyCodeLine{00015\ \textcolor{keyword}{class\ }\doxymbox{\hyperlink{class_ds1302_aed873a4f3bba68ef6acf2668f897ed9b}{Ds1302}}\ \{}
+\DoxyCodeLine{00016\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
+\DoxyCodeLine{00019\ \ \ \ \ \textcolor{comment}{//\ Date/Time\ structure\ (RTC\ format)}}
+\DoxyCodeLine{00020\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
+\DoxyCodeLine{00021\ \ \ \ \ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_ds1302_1_1date_time}{dateTime}}\ \{}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ uint8\_t\ \doxymbox{\hyperlink{struct_ds1302_1_1date_time_aa5cf0df40268c8ae94f80c12f64f69e6}{sec}};}
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ uint8\_t\ \doxymbox{\hyperlink{struct_ds1302_1_1date_time_ab3c7c00f9415d8cb391f920e7bd6c58e}{min}};}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ uint8\_t\ \doxymbox{\hyperlink{struct_ds1302_1_1date_time_a01c27fd50fc4df793b7a3401dca9b280}{hour}};}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ uint8\_t\ \doxymbox{\hyperlink{struct_ds1302_1_1date_time_a706f633e42ee8953a250b26dfeea8a6c}{date}};}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ uint8\_t\ \doxymbox{\hyperlink{struct_ds1302_1_1date_time_af03180644132022b643c008d0466085c}{month}};}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ uint8\_t\ \doxymbox{\hyperlink{struct_ds1302_1_1date_time_ae340b6114e1cf7620c9daa0d29eb5044}{day}};}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ uint8\_t\ \doxymbox{\hyperlink{struct_ds1302_1_1date_time_ab385bbe3a6dba867df82460dd7eedf65}{year}};}
+\DoxyCodeLine{00029\ \ \ \ \ \};}
+\DoxyCodeLine{00030\ }
 \DoxyCodeLine{00031\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
-\DoxyCodeLine{00032\ }
-\DoxyCodeLine{00033\ \ \ \ \ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_ds1302_1_1_alarm_time}{AlarmTime}}\ \{}
-\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ uint8\_t\ \doxymbox{\hyperlink{struct_ds1302_1_1_alarm_time_a96dc3dfc0d8f254356cdc2465f278f6c}{sec}};}
-\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ uint8\_t\ \doxymbox{\hyperlink{struct_ds1302_1_1_alarm_time_a122ba8dcef3cfd83a6d10d71c24e68fe}{min}};}
-\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ uint8\_t\ \doxymbox{\hyperlink{struct_ds1302_1_1_alarm_time_a2626e315e740a036747cfa9afc06517d}{hour}};}
-\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \doxymbox{\hyperlink{struct_ds1302_1_1_alarm_time_a7366aaeecd9f2c74ed5a74e887c52017}{active}};}
-\DoxyCodeLine{00038\ \ \ \ \ \};}
-\DoxyCodeLine{00039\ }
-\DoxyCodeLine{00040\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
-\DoxyCodeLine{00041\ \ \ \ \ \textcolor{comment}{//\ Month\ enumeration\ (1–12)}}
-\DoxyCodeLine{00042\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
-\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keyword}{enum}\ \doxymbox{\hyperlink{class_ds1302_ac64be5e0436444105dd4b5f8bcdcd7d3}{month}}\ :\ uint8\_t\ \{}
-\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ac64be5e0436444105dd4b5f8bcdcd7d3a336d0f3195fde6255a22a74370823dc8}{JANUARY}}\ =\ 1,}
-\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ac64be5e0436444105dd4b5f8bcdcd7d3a1f97b62ceada3c5a4dbb764d77ffb895}{FEBRUARY}},}
-\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ac64be5e0436444105dd4b5f8bcdcd7d3a6d8dce106eca97720074f098a4697afc}{MARCH}},}
-\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ac64be5e0436444105dd4b5f8bcdcd7d3a0ca2d4abc1b9da8b396e67a09ce9561e}{APRIL}},}
-\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ac64be5e0436444105dd4b5f8bcdcd7d3a48fb83f016f1276775fee14f3245b500}{MAY}},}
-\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ac64be5e0436444105dd4b5f8bcdcd7d3a08ec98721f113c74d9896efd5084a777}{JUNE}},}
-\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ac64be5e0436444105dd4b5f8bcdcd7d3a7c0adc7bd6e6425762f7272d9b9593d4}{JULY}},}
-\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ac64be5e0436444105dd4b5f8bcdcd7d3acf9235a9f12e6a1bafb1e8df02f83ac3}{AUGUST}},}
-\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ac64be5e0436444105dd4b5f8bcdcd7d3a16f49bbf98604e55f82c474729580b45}{SEPTEMBER}},}
-\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ac64be5e0436444105dd4b5f8bcdcd7d3ad594827f1bb06a46cfc802384e7494e6}{OCTOBER}},}
-\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ac64be5e0436444105dd4b5f8bcdcd7d3a2a66884f34fdb5a91a643e5b9fe8a927}{NOVEMBER}},}
-\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ac64be5e0436444105dd4b5f8bcdcd7d3a280db9e3828b11607a641dff58f7fcb2}{DECEMBER}}}
-\DoxyCodeLine{00056\ \ \ \ \ \};}
-\DoxyCodeLine{00057\ }
-\DoxyCodeLine{00058\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
-\DoxyCodeLine{00059\ \ \ \ \ \textcolor{comment}{//\ Day-\/of-\/week\ enumeration\ (1–7)}}
-\DoxyCodeLine{00060\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────────}}
-\DoxyCodeLine{00061\ \ \ \ \ \textcolor{keyword}{enum}\ \doxymbox{\hyperlink{class_ds1302_ad8ccf286e1d917bdd5f05d9383272354}{day}}\ :\ uint8\_t\ \{}
-\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ad8ccf286e1d917bdd5f05d9383272354a165eb5b85bbefac80aa243e8f10e357b}{SUNDAY}}\ =\ 1,}
-\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ad8ccf286e1d917bdd5f05d9383272354a605aa1e83e5dad575eca79b2344868ee}{MONDAY}},}
-\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ad8ccf286e1d917bdd5f05d9383272354aab7785da054e0018c7d29864db20a492}{TUESDAY}},}
-\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ad8ccf286e1d917bdd5f05d9383272354af2757fbd0f150d60893a0bdbcd234677}{WEDNESDAY}},}
-\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ad8ccf286e1d917bdd5f05d9383272354a03264607028796ad73790faaa54d3c2f}{THURSDAY}},}
-\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ad8ccf286e1d917bdd5f05d9383272354a8ca5e44572e86d0f35be646ed87d9ce4}{FRIDAY}},}
-\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ad8ccf286e1d917bdd5f05d9383272354ad7504e1f5047fcc3071ea79ad34ebcb7}{SATURDAY}}}
-\DoxyCodeLine{00069\ \ \ \ \ \};}
-\DoxyCodeLine{00070\ }
-\DoxyCodeLine{00071\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
-\DoxyCodeLine{00072\ \ \ \ \ \textcolor{comment}{//\ Constructor}}
-\DoxyCodeLine{00073\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
-\DoxyCodeLine{00074\ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_aed873a4f3bba68ef6acf2668f897ed9b}{Ds1302}}(uint8\_t\ clockPin,\ uint8\_t\ dataPin,\ uint8\_t\ resetPin);}
-\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00032\ \ \ \ \ \textcolor{comment}{//\ Alarm\ structure\ (software-\/based\ alarm\ tracking)}}
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{comment}{//\ NOTE:\ DS1302\ has\ no\ true\ alarm\ hardware;\ this\ is\ handled\ in\ software.}}
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_ds1302_1_1_alarm_time}{AlarmTime}}\ \{}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ uint8\_t\ \doxymbox{\hyperlink{struct_ds1302_1_1_alarm_time_a96dc3dfc0d8f254356cdc2465f278f6c}{sec}};}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ uint8\_t\ \doxymbox{\hyperlink{struct_ds1302_1_1_alarm_time_a122ba8dcef3cfd83a6d10d71c24e68fe}{min}};}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ uint8\_t\ \doxymbox{\hyperlink{struct_ds1302_1_1_alarm_time_a2626e315e740a036747cfa9afc06517d}{hour}};}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \doxymbox{\hyperlink{struct_ds1302_1_1_alarm_time_a7366aaeecd9f2c74ed5a74e887c52017}{active}};}
+\DoxyCodeLine{00041\ \ \ \ \ \};}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
+\DoxyCodeLine{00044\ \ \ \ \ \textcolor{comment}{//\ Month\ enumeration\ (1–12)}}
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
+\DoxyCodeLine{00046\ \ \ \ \ \textcolor{keyword}{enum}\ \doxymbox{\hyperlink{class_ds1302_ac64be5e0436444105dd4b5f8bcdcd7d3}{month}}\ :\ uint8\_t\ \{}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ac64be5e0436444105dd4b5f8bcdcd7d3a336d0f3195fde6255a22a74370823dc8}{JANUARY}}\ =\ 1,}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ac64be5e0436444105dd4b5f8bcdcd7d3a1f97b62ceada3c5a4dbb764d77ffb895}{FEBRUARY}},}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ac64be5e0436444105dd4b5f8bcdcd7d3a6d8dce106eca97720074f098a4697afc}{MARCH}},}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ac64be5e0436444105dd4b5f8bcdcd7d3a0ca2d4abc1b9da8b396e67a09ce9561e}{APRIL}},}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ac64be5e0436444105dd4b5f8bcdcd7d3a48fb83f016f1276775fee14f3245b500}{MAY}},}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ac64be5e0436444105dd4b5f8bcdcd7d3a08ec98721f113c74d9896efd5084a777}{JUNE}},}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ac64be5e0436444105dd4b5f8bcdcd7d3a7c0adc7bd6e6425762f7272d9b9593d4}{JULY}},}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ac64be5e0436444105dd4b5f8bcdcd7d3acf9235a9f12e6a1bafb1e8df02f83ac3}{AUGUST}},}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ac64be5e0436444105dd4b5f8bcdcd7d3a16f49bbf98604e55f82c474729580b45}{SEPTEMBER}},}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ac64be5e0436444105dd4b5f8bcdcd7d3ad594827f1bb06a46cfc802384e7494e6}{OCTOBER}},}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ac64be5e0436444105dd4b5f8bcdcd7d3a2a66884f34fdb5a91a643e5b9fe8a927}{NOVEMBER}},}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ac64be5e0436444105dd4b5f8bcdcd7d3a280db9e3828b11607a641dff58f7fcb2}{DECEMBER}}}
+\DoxyCodeLine{00059\ \ \ \ \ \};}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
+\DoxyCodeLine{00062\ \ \ \ \ \textcolor{comment}{//\ Day-\/of-\/week\ enumeration\ (1–7)}}
+\DoxyCodeLine{00063\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────────}}
+\DoxyCodeLine{00064\ \ \ \ \ \textcolor{keyword}{enum}\ \doxymbox{\hyperlink{class_ds1302_ad8ccf286e1d917bdd5f05d9383272354}{day}}\ :\ uint8\_t\ \{}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ad8ccf286e1d917bdd5f05d9383272354a165eb5b85bbefac80aa243e8f10e357b}{SUNDAY}}\ =\ 1,}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ad8ccf286e1d917bdd5f05d9383272354a605aa1e83e5dad575eca79b2344868ee}{MONDAY}},}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ad8ccf286e1d917bdd5f05d9383272354aab7785da054e0018c7d29864db20a492}{TUESDAY}},}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ad8ccf286e1d917bdd5f05d9383272354af2757fbd0f150d60893a0bdbcd234677}{WEDNESDAY}},}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ad8ccf286e1d917bdd5f05d9383272354a03264607028796ad73790faaa54d3c2f}{THURSDAY}},}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ad8ccf286e1d917bdd5f05d9383272354a8ca5e44572e86d0f35be646ed87d9ce4}{FRIDAY}},}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_ad8ccf286e1d917bdd5f05d9383272354ad7504e1f5047fcc3071ea79ad34ebcb7}{SATURDAY}}}
+\DoxyCodeLine{00072\ \ \ \ \ \};}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
+\DoxyCodeLine{00075\ \ \ \ \ \textcolor{comment}{//\ Constructor}}
 \DoxyCodeLine{00076\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
-\DoxyCodeLine{00077\ \ \ \ \ \textcolor{comment}{//\ RTC\ control}}
-\DoxyCodeLine{00078\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
-\DoxyCodeLine{00079\ }
-\DoxyCodeLine{00080\ \ \ \ \ \textcolor{comment}{//\ Initialize\ GPIO\ pins\ (must\ be\ called\ before\ use)}}
-\DoxyCodeLine{00081\ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_ds1302_a4073cac5382ac9488e4aad47e67c7f24}{initiate}}();}
+\DoxyCodeLine{00077\ \ \ \ \ \doxymbox{\hyperlink{class_ds1302_aed873a4f3bba68ef6acf2668f897ed9b}{Ds1302}}(uint8\_t\ clockPin,\ uint8\_t\ dataPin,\ uint8\_t\ resetPin);}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
+\DoxyCodeLine{00080\ \ \ \ \ \textcolor{comment}{//\ RTC\ control}}
+\DoxyCodeLine{00081\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
 \DoxyCodeLine{00082\ }
-\DoxyCodeLine{00083\ \ \ \ \ \textcolor{comment}{//\ Start\ RTC\ oscillator\ (clears\ halt\ state\ +\ enables\ timekeeping)}}
-\DoxyCodeLine{00084\ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_ds1302_ac305cf0976066d8f073e5d6938c0863e}{start}}();}
+\DoxyCodeLine{00083\ \ \ \ \ \textcolor{comment}{//\ Initialize\ GPIO\ pins\ (must\ be\ called\ before\ use)}}
+\DoxyCodeLine{00084\ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_ds1302_a4073cac5382ac9488e4aad47e67c7f24}{initiate}}();}
 \DoxyCodeLine{00085\ }
-\DoxyCodeLine{00086\ \ \ \ \ \textcolor{comment}{//\ Stop\ RTC\ oscillator\ (halts\ timekeeping)}}
-\DoxyCodeLine{00087\ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_ds1302_a84a5cdd582209b2b20673d59a0c9e1a5}{halt}}();}
-\DoxyCodeLine{00088\ }
-\DoxyCodeLine{00089\ \ \ \ \ \textcolor{comment}{//\ Returns\ true\ if\ oscillator\ is\ currently\ halted}}
-\DoxyCodeLine{00090\ \ \ \ \ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{class_ds1302_a2f7784237ff0f4bc266e6ca95ed487e3}{isHalted}}();}
-\DoxyCodeLine{00091\ }
-\DoxyCodeLine{00092\ \ \ \ \ \textcolor{comment}{//\ Disable\ write\ protection\ to\ allow\ register\ updates}}
-\DoxyCodeLine{00093\ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_ds1302_a49bf78d75e65f6654e180a24230ecfef}{disableWriteProtect}}();}
+\DoxyCodeLine{00091\ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_ds1302_ac305cf0976066d8f073e5d6938c0863e}{start}}();}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00093\ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_ds1302_a84a5cdd582209b2b20673d59a0c9e1a5}{halt}}();}
 \DoxyCodeLine{00094\ }
-\DoxyCodeLine{00095\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
-\DoxyCodeLine{00096\ \ \ \ \ \textcolor{comment}{//\ Time\ access}}
-\DoxyCodeLine{00097\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
-\DoxyCodeLine{00098\ }
-\DoxyCodeLine{00099\ \ \ \ \ \textcolor{comment}{//\ Reads\ full\ date/time\ using\ burst\ mode}}
-\DoxyCodeLine{00100\ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_ds1302_a0514fabe1dc622f9b5f829ff830943c8}{getDateTime}}(dateTime*\ dateTime);}
-\DoxyCodeLine{00101\ }
-\DoxyCodeLine{00102\ \ \ \ \ \textcolor{comment}{//\ Writes\ full\ date/time\ using\ burst\ mode}}
-\DoxyCodeLine{00103\ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_ds1302_ad429ca8ae1ff97060a19941ae26baa54}{setDateTime}}(dateTime*\ dateTime);}
+\DoxyCodeLine{00095\ \ \ \ \ \textcolor{comment}{//\ Returns\ true\ if\ oscillator\ is\ currently\ halted}}
+\DoxyCodeLine{00096\ \ \ \ \ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{class_ds1302_a2f7784237ff0f4bc266e6ca95ed487e3}{isHalted}}();}
+\DoxyCodeLine{00097\ }
+\DoxyCodeLine{00103\ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_ds1302_a49bf78d75e65f6654e180a24230ecfef}{disableWriteProtect}}();}
 \DoxyCodeLine{00104\ }
 \DoxyCodeLine{00105\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
-\DoxyCodeLine{00106\ \ \ \ \ \textcolor{comment}{//\ Alarm\ system\ (software-\/based)}}
+\DoxyCodeLine{00106\ \ \ \ \ \textcolor{comment}{//\ Time\ access}}
 \DoxyCodeLine{00107\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
 \DoxyCodeLine{00108\ }
-\DoxyCodeLine{00109\ \ \ \ \ \textcolor{comment}{//\ Set\ alarm\ time\ (hour/min/sec)}}
-\DoxyCodeLine{00110\ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_ds1302_ac6bf7aa0903f8604529a548502f71314}{setAlarm}}(uint8\_t\ hour,\ uint8\_t\ min,\ uint8\_t\ sec);}
-\DoxyCodeLine{00111\ }
-\DoxyCodeLine{00112\ \ \ \ \ \textcolor{comment}{//\ Disable\ alarm}}
-\DoxyCodeLine{00113\ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_ds1302_a2a4d7afda08dfe537d6c0789c2aa334e}{clearAlarm}}();}
-\DoxyCodeLine{00114\ }
-\DoxyCodeLine{00115\ \ \ \ \ \textcolor{comment}{//\ Check\ if\ alarm\ condition\ is\ currently\ triggered}}
-\DoxyCodeLine{00116\ \ \ \ \ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{class_ds1302_a50420525d22785da155e96bc2ec38d35}{checkAlarm}}();}
-\DoxyCodeLine{00117\ }
-\DoxyCodeLine{00118\ \ \ \ \ \textcolor{comment}{//\ Returns\ whether\ alarm\ is\ enabled}}
-\DoxyCodeLine{00119\ \ \ \ \ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{class_ds1302_a8a2d4f12103429fb4fb04817e034a361}{isAlarmActive}}();}
-\DoxyCodeLine{00120\ }
+\DoxyCodeLine{00115\ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_ds1302_a0514fabe1dc622f9b5f829ff830943c8}{getDateTime}}(dateTime*\ dateTime);}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_ds1302_ad429ca8ae1ff97060a19941ae26baa54}{setDateTime}}(dateTime*\ dateTime);}
+\DoxyCodeLine{00118\ }
+\DoxyCodeLine{00119\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
+\DoxyCodeLine{00120\ \ \ \ \ \textcolor{comment}{//\ Alarm\ system\ (software-\/based)}}
 \DoxyCodeLine{00121\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
-\DoxyCodeLine{00122\ \ \ \ \ \textcolor{comment}{//\ Low-\/level\ register\ access}}
-\DoxyCodeLine{00123\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
-\DoxyCodeLine{00124\ \ \ \ \ uint8\_t\ \doxymbox{\hyperlink{class_ds1302_a289e5efa47ca745e1e2ea755c79c3e8d}{readRegister}}(uint8\_t\ reg);}
+\DoxyCodeLine{00122\ }
+\DoxyCodeLine{00123\ \ \ \ \ \textcolor{comment}{//\ Set\ alarm\ time\ (hour/min/sec)}}
+\DoxyCodeLine{00124\ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_ds1302_ac6bf7aa0903f8604529a548502f71314}{setAlarm}}(uint8\_t\ hour,\ uint8\_t\ min,\ uint8\_t\ sec);}
 \DoxyCodeLine{00125\ }
-\DoxyCodeLine{00126\ \textcolor{keyword}{private}:}
-\DoxyCodeLine{00127\ }
-\DoxyCodeLine{00128\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
-\DoxyCodeLine{00129\ \ \ \ \ \textcolor{comment}{//\ Hardware\ pins\ (3-\/wire\ interface)}}
-\DoxyCodeLine{00130\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
-\DoxyCodeLine{00131\ \ \ \ \ uint8\_t\ \_clockPin;}
-\DoxyCodeLine{00132\ \ \ \ \ uint8\_t\ \_dataPin;}
-\DoxyCodeLine{00133\ \ \ \ \ uint8\_t\ \_resetPin;}
+\DoxyCodeLine{00126\ \ \ \ \ \textcolor{comment}{//\ Disable\ alarm}}
+\DoxyCodeLine{00127\ \ \ \ \ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{class_ds1302_a2a4d7afda08dfe537d6c0789c2aa334e}{clearAlarm}}();}
+\DoxyCodeLine{00128\ }
+\DoxyCodeLine{00129\ \ \ \ \ \textcolor{comment}{//\ Check\ if\ alarm\ condition\ is\ currently\ triggered}}
+\DoxyCodeLine{00130\ \ \ \ \ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{class_ds1302_a50420525d22785da155e96bc2ec38d35}{checkAlarm}}();}
+\DoxyCodeLine{00131\ }
+\DoxyCodeLine{00132\ \ \ \ \ \textcolor{comment}{//\ Returns\ whether\ alarm\ is\ enabled}}
+\DoxyCodeLine{00133\ \ \ \ \ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{class_ds1302_a8a2d4f12103429fb4fb04817e034a361}{isAlarmActive}}();}
 \DoxyCodeLine{00134\ }
 \DoxyCodeLine{00135\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
-\DoxyCodeLine{00136\ \ \ \ \ \textcolor{comment}{//\ Alarm\ state}}
+\DoxyCodeLine{00136\ \ \ \ \ \textcolor{comment}{//\ Low-\/level\ register\ access}}
 \DoxyCodeLine{00137\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
-\DoxyCodeLine{00138\ \ \ \ \ AlarmTime\ \_alarm;}
-\DoxyCodeLine{00139\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \_alarmTriggered;}
-\DoxyCodeLine{00140\ }
-\DoxyCodeLine{00141\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
-\DoxyCodeLine{00142\ \ \ \ \ \textcolor{comment}{//\ Low-\/level\ communication\ helpers}}
-\DoxyCodeLine{00143\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
+\DoxyCodeLine{00141\ \ \ \ \ uint8\_t\ \doxymbox{\hyperlink{class_ds1302_a289e5efa47ca745e1e2ea755c79c3e8d}{readRegister}}(uint8\_t\ reg);}
+\DoxyCodeLine{00142\ }
+\DoxyCodeLine{00143\ \textcolor{keyword}{private}:}
 \DoxyCodeLine{00144\ }
-\DoxyCodeLine{00145\ \ \ \ \ \textcolor{keywordtype}{void}\ prepRead(uint8\_t\ address);}
-\DoxyCodeLine{00146\ \ \ \ \ \textcolor{keywordtype}{void}\ prepWrite(uint8\_t\ address);}
-\DoxyCodeLine{00147\ \ \ \ \ \textcolor{keywordtype}{void}\ end();}
-\DoxyCodeLine{00148\ }
-\DoxyCodeLine{00149\ \ \ \ \ \textcolor{keywordtype}{int}\ \ dataDirection();}
-\DoxyCodeLine{00150\ \ \ \ \ \textcolor{keywordtype}{void}\ setDataDirection(\textcolor{keywordtype}{int}\ direction);}
+\DoxyCodeLine{00145\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
+\DoxyCodeLine{00146\ \ \ \ \ \textcolor{comment}{//\ Hardware\ pins\ (3-\/wire\ interface)}}
+\DoxyCodeLine{00147\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
+\DoxyCodeLine{00148\ \ \ \ \ uint8\_t\ \_clockPin;}
+\DoxyCodeLine{00149\ \ \ \ \ uint8\_t\ \_dataPin;}
+\DoxyCodeLine{00150\ \ \ \ \ uint8\_t\ \_resetPin;}
 \DoxyCodeLine{00151\ }
-\DoxyCodeLine{00152\ \ \ \ \ uint8\_t\ readByte();}
-\DoxyCodeLine{00153\ \ \ \ \ \textcolor{keywordtype}{void}\ writeByte(uint8\_t\ val);}
-\DoxyCodeLine{00154\ \ \ \ \ \textcolor{keywordtype}{void}\ nextBit();}
-\DoxyCodeLine{00155\ }
-\DoxyCodeLine{00156\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
-\DoxyCodeLine{00157\ \ \ \ \ \textcolor{comment}{//\ Data\ format\ conversion\ (BCD\ ↔\ decimal)}}
+\DoxyCodeLine{00152\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
+\DoxyCodeLine{00153\ \ \ \ \ \textcolor{comment}{//\ Alarm\ state}}
+\DoxyCodeLine{00154\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
+\DoxyCodeLine{00155\ \ \ \ \ AlarmTime\ \_alarm;}
+\DoxyCodeLine{00156\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \_alarmTriggered;}
+\DoxyCodeLine{00157\ }
 \DoxyCodeLine{00158\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
-\DoxyCodeLine{00159\ \ \ \ \ uint8\_t\ bcdToDec(uint8\_t\ dec);}
-\DoxyCodeLine{00160\ \ \ \ \ uint8\_t\ decToBcd(uint8\_t\ bcd);}
+\DoxyCodeLine{00159\ \ \ \ \ \textcolor{comment}{//\ Low-\/level\ communication\ helpers}}
+\DoxyCodeLine{00160\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
 \DoxyCodeLine{00161\ }
-\DoxyCodeLine{00162\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
-\DoxyCodeLine{00163\ \ \ \ \ \textcolor{comment}{//\ Internal\ control\ (oscillator\ /\ halt\ bit\ management)}}
-\DoxyCodeLine{00164\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
-\DoxyCodeLine{00165\ \ \ \ \ \textcolor{keywordtype}{void}\ setHaltFlag(\textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{class_ds1302_a84a5cdd582209b2b20673d59a0c9e1a5}{halt}});}
-\DoxyCodeLine{00166\ \};}
+\DoxyCodeLine{00162\ \ \ \ \ \textcolor{keywordtype}{void}\ prepRead(uint8\_t\ address);}
+\DoxyCodeLine{00163\ \ \ \ \ \textcolor{keywordtype}{void}\ prepWrite(uint8\_t\ address);}
+\DoxyCodeLine{00164\ \ \ \ \ \textcolor{keywordtype}{void}\ end();}
+\DoxyCodeLine{00165\ }
+\DoxyCodeLine{00166\ \ \ \ \ \textcolor{keywordtype}{int}\ \ dataDirection();}
+\DoxyCodeLine{00167\ \ \ \ \ \textcolor{keywordtype}{void}\ setDataDirection(\textcolor{keywordtype}{int}\ direction);}
+\DoxyCodeLine{00168\ }
+\DoxyCodeLine{00169\ \ \ \ \ uint8\_t\ readByte();}
+\DoxyCodeLine{00170\ \ \ \ \ \textcolor{keywordtype}{void}\ writeByte(uint8\_t\ val);}
+\DoxyCodeLine{00171\ \ \ \ \ \textcolor{keywordtype}{void}\ nextBit();}
+\DoxyCodeLine{00172\ }
+\DoxyCodeLine{00173\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
+\DoxyCodeLine{00174\ \ \ \ \ \textcolor{comment}{//\ Data\ format\ conversion\ (BCD\ ↔\ decimal)}}
+\DoxyCodeLine{00175\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
+\DoxyCodeLine{00176\ \ \ \ \ uint8\_t\ bcdToDec(uint8\_t\ dec);}
+\DoxyCodeLine{00177\ \ \ \ \ uint8\_t\ decToBcd(uint8\_t\ bcd);}
+\DoxyCodeLine{00178\ }
+\DoxyCodeLine{00179\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
+\DoxyCodeLine{00180\ \ \ \ \ \textcolor{comment}{//\ Internal\ control\ (oscillator\ /\ halt\ bit\ management)}}
+\DoxyCodeLine{00181\ \ \ \ \ \textcolor{comment}{//\ ─────────────────────────────────────────────────────────────────────────}}
+\DoxyCodeLine{00182\ \ \ \ \ \textcolor{keywordtype}{void}\ setHaltFlag(\textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{class_ds1302_a84a5cdd582209b2b20673d59a0c9e1a5}{halt}});}
+\DoxyCodeLine{00183\ \};}
 
 \end{DoxyCode}

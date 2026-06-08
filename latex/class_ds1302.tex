@@ -50,15 +50,15 @@ enum \doxymbox{\hyperlink{class_ds1302_ad8ccf286e1d917bdd5f05d9383272354}{day}} 
 void \doxymbox{\hyperlink{class_ds1302_a4073cac5382ac9488e4aad47e67c7f24}{initiate}} ()
 \item 
 void \doxymbox{\hyperlink{class_ds1302_ac305cf0976066d8f073e5d6938c0863e}{start}} ()
-\item 
+\begin{DoxyCompactList}\small\item\em Controls oscillator start/\+stop using CH bit (Clock Halt bit in seconds register). \end{DoxyCompactList}\item 
 void \doxymbox{\hyperlink{class_ds1302_a84a5cdd582209b2b20673d59a0c9e1a5}{halt}} ()
 \item 
 bool \doxymbox{\hyperlink{class_ds1302_a2f7784237ff0f4bc266e6ca95ed487e3}{is\+Halted}} ()
 \item 
 void \doxymbox{\hyperlink{class_ds1302_a49bf78d75e65f6654e180a24230ecfef}{disable\+Write\+Protect}} ()
-\item 
+\begin{DoxyCompactList}\small\item\em Disables DS1302 write protection register (WP bit control register 0x8E). \end{DoxyCompactList}\item 
 void \doxymbox{\hyperlink{class_ds1302_a0514fabe1dc622f9b5f829ff830943c8}{get\+Date\+Time}} (date\+Time \texorpdfstring{$\ast$}{*}date\+Time)
-\item 
+\begin{DoxyCompactList}\small\item\em DS1302 burst mode read/\+write (datasheet timing + register block access). \end{DoxyCompactList}\item 
 void \doxymbox{\hyperlink{class_ds1302_ad429ca8ae1ff97060a19941ae26baa54}{set\+Date\+Time}} (date\+Time \texorpdfstring{$\ast$}{*}date\+Time)
 \item 
 void \doxymbox{\hyperlink{class_ds1302_ac6bf7aa0903f8604529a548502f71314}{set\+Alarm}} (uint8\+\_\+t hour, uint8\+\_\+t min, uint8\+\_\+t sec)
@@ -70,7 +70,7 @@ bool \doxymbox{\hyperlink{class_ds1302_a50420525d22785da155e96bc2ec38d35}{check\
 bool \doxymbox{\hyperlink{class_ds1302_a8a2d4f12103429fb4fb04817e034a361}{is\+Alarm\+Active}} ()
 \item 
 uint8\+\_\+t \doxymbox{\hyperlink{class_ds1302_a289e5efa47ca745e1e2ea755c79c3e8d}{read\+Register}} (uint8\+\_\+t reg)
-\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Reads a raw DS1302 register using address mapping from datasheet. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \label{class_ds1302_doc-enum-members}
@@ -240,13 +240,21 @@ void Ds1302::\+clear\+Alarm (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})
 {\footnotesize\ttfamily \label{class_ds1302_a49bf78d75e65f6654e180a24230ecfef} 
 void Ds1302::\+disable\+Write\+Protect (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
 
-\Hypertarget{class_ds1302_a0514fabe1dc622f9b5f829ff830943c8}\index{Ds1302@{Ds1302}!getDateTime@{getDateTime}}
+
+
+Disables DS1302 write protection register (WP bit control register 0x8E). 
+
+Required before modifying time/\+date registers. \Hypertarget{class_ds1302_a0514fabe1dc622f9b5f829ff830943c8}\index{Ds1302@{Ds1302}!getDateTime@{getDateTime}}
 \index{getDateTime@{getDateTime}!Ds1302@{Ds1302}}
 \doxysubsubsection{\texorpdfstring{getDateTime()}{getDateTime()}}
 {\footnotesize\ttfamily \label{class_ds1302_a0514fabe1dc622f9b5f829ff830943c8} 
 void Ds1302::\+get\+Date\+Time (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{struct_ds1302_1_1date_time}{date\+Time}} \texorpdfstring{$\ast$}{*}}]{date\+Time}{}\end{DoxyParamCaption})}
 
-\Hypertarget{class_ds1302_a84a5cdd582209b2b20673d59a0c9e1a5}\index{Ds1302@{Ds1302}!halt@{halt}}
+
+
+DS1302 burst mode read/\+write (datasheet timing + register block access). 
+
+Implements the burst transfer sequence as described in the DS1302 datasheet (clock/\+calendar register block access in a single transaction). \Hypertarget{class_ds1302_a84a5cdd582209b2b20673d59a0c9e1a5}\index{Ds1302@{Ds1302}!halt@{halt}}
 \index{halt@{halt}!Ds1302@{Ds1302}}
 \doxysubsubsection{\texorpdfstring{halt()}{halt()}}
 {\footnotesize\ttfamily \label{class_ds1302_a84a5cdd582209b2b20673d59a0c9e1a5} 
@@ -276,6 +284,10 @@ bool Ds1302::\+is\+Halted (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
 {\footnotesize\ttfamily \label{class_ds1302_a289e5efa47ca745e1e2ea755c79c3e8d} 
 uint8\+\_\+t Ds1302::\+read\+Register (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{reg}{}\end{DoxyParamCaption})}
 
+
+
+Reads a raw DS1302 register using address mapping from datasheet. 
+
 \Hypertarget{class_ds1302_ac6bf7aa0903f8604529a548502f71314}\index{Ds1302@{Ds1302}!setAlarm@{setAlarm}}
 \index{setAlarm@{setAlarm}!Ds1302@{Ds1302}}
 \doxysubsubsection{\texorpdfstring{setAlarm()}{setAlarm()}}
@@ -295,6 +307,10 @@ void Ds1302::\+set\+Date\+Time (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperl
 void Ds1302::\+start (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
 
 
+
+Controls oscillator start/\+stop using CH bit (Clock Halt bit in seconds register). 
+
+Based on DS1302 datasheet register 0x80 (seconds register, CH flag). 
 
 The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
 \item 

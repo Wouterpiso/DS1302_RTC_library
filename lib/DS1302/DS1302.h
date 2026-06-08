@@ -3,10 +3,13 @@
 #include <stdint.h>
 
 /**
- * @class DS1302
- * @brief Main class for DS1302 RTC communication.
+ * @file DS1302.h
+ * @brief Driver for DS1302 Real Time Clock module.
  *
- * Handles reading and writing time from the RTC chip.
+ * This library allows reading and writing time from a DS1302 RTC chip
+ * using a simple 3-wire interface.
+ *
+ * Tested with Arduino Uno and ESP32 WROOM.
  */
 
 class Ds1302 {
@@ -80,26 +83,37 @@ public:
     // Initialize GPIO pins (must be called before use)
     void initiate();
 
-    // Start RTC oscillator (clears halt state + enables timekeeping)
+    /**
+     * @brief Controls oscillator start/stop using CH bit (Clock Halt bit in seconds register).
+     *
+     * Based on DS1302 datasheet register 0x80 (seconds register, CH flag).
+     */
     void start();
 
-    // Stop RTC oscillator (halts timekeeping)
     void halt();
 
     // Returns true if oscillator is currently halted
     bool isHalted();
 
-    // Disable write protection to allow register updates
+    /**
+     * @brief Disables DS1302 write protection register (WP bit control register 0x8E).
+     *
+     * Required before modifying time/date registers.
+     */
     void disableWriteProtect();
 
     // ─────────────────────────────────────────────────────────────────────────
     // Time access
     // ─────────────────────────────────────────────────────────────────────────
 
-    // Reads full date/time using burst mode
+    /**
+     * @brief DS1302 burst mode read/write (datasheet timing + register block access)
+     *
+     * Implements the burst transfer sequence as described in the DS1302 datasheet
+     * (clock/calendar register block access in a single transaction).
+     */
     void getDateTime(dateTime* dateTime);
 
-    // Writes full date/time using burst mode
     void setDateTime(dateTime* dateTime);
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -121,6 +135,9 @@ public:
     // ─────────────────────────────────────────────────────────────────────────
     // Low-level register access
     // ─────────────────────────────────────────────────────────────────────────
+    /**
+     * @brief Reads a raw DS1302 register using address mapping from datasheet.
+     */
     uint8_t readRegister(uint8_t reg);
 
 private:

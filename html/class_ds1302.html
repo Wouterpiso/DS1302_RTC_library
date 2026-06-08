@@ -162,16 +162,20 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aed873a4f3bba68ef6acf2668f897ed9b" id="r_aed873a4f3bba68ef6acf2668f897ed9b"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#aed873a4f3bba68ef6acf2668f897ed9b">Ds1302</a> (uint8_t clockPin, uint8_t dataPin, uint8_t resetPin)</td></tr>
 <tr class="memitem:a4073cac5382ac9488e4aad47e67c7f24" id="r_a4073cac5382ac9488e4aad47e67c7f24"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a4073cac5382ac9488e4aad47e67c7f24">initiate</a> ()</td></tr>
 <tr class="memitem:ac305cf0976066d8f073e5d6938c0863e" id="r_ac305cf0976066d8f073e5d6938c0863e"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#ac305cf0976066d8f073e5d6938c0863e">start</a> ()</td></tr>
+<tr class="memdesc:ac305cf0976066d8f073e5d6938c0863e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Controls oscillator start/stop using CH bit (Clock Halt bit in seconds register).  <br /></td></tr>
 <tr class="memitem:a84a5cdd582209b2b20673d59a0c9e1a5" id="r_a84a5cdd582209b2b20673d59a0c9e1a5"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a84a5cdd582209b2b20673d59a0c9e1a5">halt</a> ()</td></tr>
 <tr class="memitem:a2f7784237ff0f4bc266e6ca95ed487e3" id="r_a2f7784237ff0f4bc266e6ca95ed487e3"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a2f7784237ff0f4bc266e6ca95ed487e3">isHalted</a> ()</td></tr>
 <tr class="memitem:a49bf78d75e65f6654e180a24230ecfef" id="r_a49bf78d75e65f6654e180a24230ecfef"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a49bf78d75e65f6654e180a24230ecfef">disableWriteProtect</a> ()</td></tr>
+<tr class="memdesc:a49bf78d75e65f6654e180a24230ecfef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disables DS1302 write protection register (WP bit control register 0x8E).  <br /></td></tr>
 <tr class="memitem:a0514fabe1dc622f9b5f829ff830943c8" id="r_a0514fabe1dc622f9b5f829ff830943c8"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a0514fabe1dc622f9b5f829ff830943c8">getDateTime</a> (dateTime *dateTime)</td></tr>
+<tr class="memdesc:a0514fabe1dc622f9b5f829ff830943c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">DS1302 burst mode read/write (datasheet timing + register block access).  <br /></td></tr>
 <tr class="memitem:ad429ca8ae1ff97060a19941ae26baa54" id="r_ad429ca8ae1ff97060a19941ae26baa54"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#ad429ca8ae1ff97060a19941ae26baa54">setDateTime</a> (dateTime *dateTime)</td></tr>
 <tr class="memitem:ac6bf7aa0903f8604529a548502f71314" id="r_ac6bf7aa0903f8604529a548502f71314"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#ac6bf7aa0903f8604529a548502f71314">setAlarm</a> (uint8_t hour, uint8_t min, uint8_t sec)</td></tr>
 <tr class="memitem:a2a4d7afda08dfe537d6c0789c2aa334e" id="r_a2a4d7afda08dfe537d6c0789c2aa334e"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a2a4d7afda08dfe537d6c0789c2aa334e">clearAlarm</a> ()</td></tr>
 <tr class="memitem:a50420525d22785da155e96bc2ec38d35" id="r_a50420525d22785da155e96bc2ec38d35"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a50420525d22785da155e96bc2ec38d35">checkAlarm</a> ()</td></tr>
 <tr class="memitem:a8a2d4f12103429fb4fb04817e034a361" id="r_a8a2d4f12103429fb4fb04817e034a361"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a8a2d4f12103429fb4fb04817e034a361">isAlarmActive</a> ()</td></tr>
 <tr class="memitem:a289e5efa47ca745e1e2ea755c79c3e8d" id="r_a289e5efa47ca745e1e2ea755c79c3e8d"><td class="memItemLeft">uint8_t&#160;</td><td class="memItemRight"><a class="el" href="#a289e5efa47ca745e1e2ea755c79c3e8d">readRegister</a> (uint8_t reg)</td></tr>
+<tr class="memdesc:a289e5efa47ca745e1e2ea755c79c3e8d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a raw DS1302 register using address mapping from datasheet.  <br /></td></tr>
 </table>
 <a name="doc-enum-members" id="doc-enum-members"></a><h2 id="header-doc-enum-members" class="groupheader">Member Enumeration Documentation</h2>
 <a id="ad8ccf286e1d917bdd5f05d9383272354" name="ad8ccf286e1d917bdd5f05d9383272354"></a>
@@ -302,6 +306,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Disables DS1302 write protection register (WP bit control register 0x8E). </p>
+<p>Required before modifying time/date registers. </p>
+
 </div>
 </div>
 <a id="a0514fabe1dc622f9b5f829ff830943c8" name="a0514fabe1dc622f9b5f829ff830943c8"></a>
@@ -318,6 +325,9 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>DS1302 burst mode read/write (datasheet timing + register block access). </p>
+<p>Implements the burst transfer sequence as described in the DS1302 datasheet (clock/calendar register block access in a single transaction). </p>
 
 </div>
 </div>
@@ -404,6 +414,8 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Reads a raw DS1302 register using address mapping from datasheet. </p>
+
 </div>
 </div>
 <a id="ac6bf7aa0903f8604529a548502f71314" name="ac6bf7aa0903f8604529a548502f71314"></a>
@@ -463,6 +475,9 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Controls oscillator start/stop using CH bit (Clock Halt bit in seconds register). </p>
+<p>Based on DS1302 datasheet register 0x80 (seconds register, CH flag). </p>
 
 </div>
 </div>
